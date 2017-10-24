@@ -1,0 +1,88 @@
+/*
+    Douglas Salvati
+    Douglas_Salvati@student.uml.edu
+    Computer Science Department, UMass Lowell
+    File: /usr/cs/2018/dsalvati/public_html/comp4610hw3/css/style1.css
+    Created: 18 October 2017
+    Modified: 18 October 2017
+
+    Description: CSS for my main pages
+*/
+
+/****** GENERAL *********/
+
+/* Not planning lengthly texts, so sans-serif is the standard */
+body {
+    font-family: sans-serif;
+    margin: 0;
+}
+
+/* Links: hover for underline, otherwise plain blue */
+a {
+    color: #138fe2;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Tables are pretty straight forward with collapsed solid borders */
+table {
+    border-collapse: collapse;
+    border: 3px solid black;
+    width: 30%;
+    height: auto;
+    margin: auto;
+}
+
+/* Inner borders are a little thinner */
+th, td {
+    border: 1px solid black;
+    padding: 10px;
+}
+
+h2 {
+    text-align: center;
+}
+
+/* Paragraphs, etc, get larger margins */
+p {
+    margin-left: 5%;
+    margin-right: 5%;
+}
+
+ul {
+    margin-left: 5%;
+    margin-right: 5%;
+}
+
+/****** NAVIGATION BAR *********/
+
+.nav_bar {
+    width: 100%;
+    background-color: #44dd44;
+    padding-left: 10%;
+    padding-right: 10%;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    color: white;
+}
+
+.nav_bar > a {
+    color: white;
+    display: inline;
+}
+
+/**** VALID CSS/HTML LOGOS ******/
+/* They go on the top-right of their container (navbar) */
+ul.validated {
+    position: absolute;
+    right: 0;
+    top: 0;
+    margin: 0;
+}
+
+ul.validated > li {
+    display: inline;
+}

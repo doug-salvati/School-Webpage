@@ -35,14 +35,14 @@ class Ownership {
         down_elt.appendChild(document.createTextNode("You pay a down payment of $" + this.down + " plus..."));
         var monthly_elt = document.createElement("P");
         monthly_elt.appendChild(document.createTextNode("Monthly Cost: $" + this.monthlyPayment().toFixed(2) + " for " + this.months + " months"));
-        var milely_elt = document.createElement("P");
-        milely_elt.appendChild(document.createTextNode("Cost per Mile: $" + this.perMilePayment(miles_per_year).toFixed(2)));
+        var permile_elt = document.createElement("P");
+        permile_elt.appendChild(document.createTextNode("Cost per Mile: $" + this.perMilePayment(miles_per_year).toFixed(2)));
         card.appendChild(name_elt);
         card.appendChild(dealer_elt);
         card.appendChild(total_elt);
         card.appendChild(down_elt);
         card.appendChild(monthly_elt);
-        card.appendChild(milely_elt);
+        card.appendChild(permile_elt);
         return card;
     }
 };
@@ -117,6 +117,26 @@ var listofcars = {
             cards.appendChild(this.list[i].getCard(miles_per_year));
         }
         replace.parentNode.replaceChild(cards, replace);
+    },
+    sort_by: function(key, miles_per_year) {
+        if (key == 'price') {
+            var comparison = function(x, y) {
+                x_price = (x instanceof Lease) ? x.monthlyPayment(miles_per_year) : x.monthlyPayment();
+                y_price = (y instanceof Lease) ? y.monthlyPayment(miles_per_year) : y.monthlyPayment();
+                console.log("Comparing the prices: " + x_price + " and " + y_price)
+                if (x_price < y_price) return -1;
+                if (x_price > y_price) return 1;
+                return 0;
+            };
+        } else {
+            var comparison = function(x, y) {
+                console.log("comparing names " + x.name + " and " + y.name);
+                if (x.name < y.name) return -1;
+                if (x.name > y.name) return 1;
+                return 0;
+            };
+        }
+        this.list = this.list.sort(comparison);
     }
 };
 
@@ -126,22 +146,22 @@ window.onload = function() {
     // Detect "Add a Car" Button Clicked
     document.getElementById("add_a_car").onclick = function() {
         document.getElementById("add_a_car_form").style.display = "block";
-    }
+    };
 
     // Detect selection of Lease/Ownership
     document.getElementById("radio_own").onclick = function() {
         document.getElementById("ownership").style.display = "block";
         document.getElementById("lease").style.display = "none";
-    }
+    };
     document.getElementById("radio_lease").onclick = function() {
         document.getElementById("lease").style.display = "block";
         document.getElementById("ownership").style.display = "none";
-    }
+    };
 
     // Detect "Cancel" Button Clicked
     document.getElementById("cancel").onclick = function() {
         document.getElementById("add_a_car_form").style.display = "none";
-    }
+    };
 
     // Detect "Save" Button Clicked
     document.getElementById("save").onclick = function() {
@@ -167,13 +187,30 @@ window.onload = function() {
             var option = new Lease(name, dealer, monthly_pmt, miles, extra, ccr, period);
         }
         listofcars.add(option);
+        if (document.getElementById("radio_price").checked) {
+            listofcars.sort_by('price');
+        } else {
+            listofcars.sort_by('name');
+        }
         var miles_per_year = Number(document.getElementsByName("miles_per_year")[0].value);
         listofcars.draw_cards(document.getElementById("carlist"), miles_per_year)
         document.getElementById("add_a_car_form").style.display = "none";
     };
+
+    // Detect sorting change
+    document.getElementById("radio_price").onclick = function() {
+        listofcars.sort_by('price');
+        var miles_per_year = Number(document.getElementsByName("miles_per_year")[0].value);
+        listofcars.draw_cards(document.getElementById("carlist"), miles_per_year)
+    };
+    document.getElementById("radio_name").onclick = function() {
+        listofcars.sort_by('name');
+        var miles_per_year = Number(document.getElementsByName("miles_per_year")[0].value);
+        listofcars.draw_cards(document.getElementById("carlist"), miles_per_year)
+    };
 };
 
 // TO DO:
-// Event handlers for sort and changed mileage
+// Event handlers for changed mileage
 // Editing of Entries
 // Style

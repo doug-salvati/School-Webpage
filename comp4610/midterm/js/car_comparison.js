@@ -212,7 +212,3 @@ window.onload = function() {
         listofcars.draw_cards(document.getElementById("carlist"), miles_per_year);
     }
 };
-
-// TO DO:
-// Editing of Entries
-// Style

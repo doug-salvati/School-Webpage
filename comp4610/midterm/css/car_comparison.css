@@ -1,7 +1,55 @@
+body {
+    background-color: #e3eef3;
+    margin: 0;
+    font-family: sans-serif;
+}
+
+#heading_area {
+    background-color: white;
+    padding: 25px;
+    box-shadow: 0px 10px 5px rgba(0,0,0,0.25);    
+}
+
+#add_a_car {
+    position: absolute;
+    right: 25px;
+    display: inline;
+    font-size: 1em;
+    padding: 0;
+    background: none;
+    border: none;
+}
+
+#add_a_car:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+#add_a_car:active {
+    color: black;
+}
+
+.fa-plus-square-o {
+    color: green;
+}
+
 #add_a_car_form {
     display: none;
 }
 
 #lease {
     display: none;
+}
+
+#app_title {
+    display: inline;
+}
+
+#global_settings {
+    text-align: center;
+}
+
+#global_settings > .global_setting {
+    margin-left: 25px;
+    margin-right: 25px;
 }

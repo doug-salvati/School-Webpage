@@ -16,17 +16,26 @@
     <head>
         <title>Car Comparison</title>
         <link rel="stylesheet" href="css/car_comparison.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
         <script src="js/car_comparison.js"></script>
     </head>
     <body>
         <!-- Heading area -->
-        <h1>Car Comparison</h1>
-        <button id="add_a_car">Add a Car</button><br>
-        Sort by:
-        <input type="radio" name="sort" value="price" id="radio_price" checked="checked">Lowest Payments
-        <input type="radio" name="sort" value="name" id="radio_name">Name<br/>
-        Miles per year:
-        <input type="number" name="miles_per_year" value="15000" id="miles_per_year">
+        <div id="heading_area">
+            <h1 id="app_title">Car Comparison</h1>
+            <button id="add_a_car"><i class="fa fa-plus-square-o" aria-hidden="true"></i> Add a Car</button><br/>
+            <div id="global_settings">
+                <span class="global_setting">
+                    Sort by:
+                    <input type="radio" name="sort" value="price" id="radio_price" checked="checked"> Lowest Payments
+                    <input type="radio" name="sort" value="name" id="radio_name"> Name
+                </span>
+                <span class="global_setting">
+                    Miles per year:
+                    <input type="number" name="miles_per_year" value="15000" id="miles_per_year">
+                </span>
+            </div>
+        </div>
 
         <!-- Add a car form -->
         <div id="add_a_car_form">

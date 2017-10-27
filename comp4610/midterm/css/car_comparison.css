@@ -1,17 +1,23 @@
 body {
     background-color: #e3eef3;
     margin: 0;
+    margin-top: 150px;
     font-family: sans-serif;
 }
 
 #heading_area {
     background-color: white;
     padding: 25px;
-    box-shadow: 0px 10px 5px rgba(0,0,0,0.25);    
+    box-shadow: 0px 10px 5px rgba(0,0,0,0.25);
+    position: fixed;
+    z-index: 998;
+    top: 0;
+    width: 100%;
+    height: 60px;
 }
 
 #add_a_car {
-    position: absolute;
+    position: fixed;
     right: 25px;
     display: inline;
     font-size: 1em;
@@ -52,4 +58,90 @@ body {
 #global_settings > .global_setting {
     margin-left: 25px;
     margin-right: 25px;
+}
+
+/* Add A Car Menu */
+#add_a_car_form {
+    background: white;
+    margin: 25px;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 5px 5px 5px rgba(0,0,0,0.1);
+    width: 25%;
+    position: fixed;
+    top: 30px;
+    right: 0;
+    z-index: 999;
+    border: 1px solid #527596;
+}
+
+#cancel {
+    color: red;
+}
+#save {
+    color: green;
+}
+
+/* The cards */
+#carlist {
+    list-style-type: none;
+    padding: 0;
+}
+
+#carlist > li {
+    background: white;
+    margin: 25px;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 5px 5px 5px rgba(0,0,0,0.1);
+    position: relative;
+}
+
+.card_name {
+    color: #527596;
+    margin: 0;
+}
+
+.card_dealer {
+    margin: 0;
+    font-style: italic;
+    display: inline;
+}
+
+.card_total {
+    margin: 0;
+    position: absolute;
+    right: 25px;
+    display: inline;
+}
+
+.card_down {
+    text-align: center;
+    color: #9c9c9c;
+}
+
+.card_payment {
+    border: 1px solid #527596 ;
+    border-radius: 5px;
+    display: inline-block;
+    margin-left: 25px;
+    margin-right: 25px;
+    padding: 25px;
+    text-align: center;
+    width: 25%;
+}
+
+.card_payment > h1 {
+    color: #527596;
+    font-size: 3em;
+}
+
+.card_payment > p {
+    color: #9c9c9c;
+}
+
+.card_cost_container {
+    text-align: center;
+    width: auto;
+    margin: auto;
 }

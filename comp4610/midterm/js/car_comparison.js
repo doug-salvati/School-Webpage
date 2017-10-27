@@ -27,22 +27,31 @@ class Ownership {
         var card = document.createElement("LI");
         var name_elt = document.createElement("H2");
         name_elt.appendChild(document.createTextNode("Ownership: " + this.name));
+        name_elt.className = "card_name";
         var dealer_elt = document.createElement("P");
         dealer_elt.appendChild(document.createTextNode("Dealer: " + this.dealer));
+        dealer_elt.className = "card_dealer";
         var total_elt = document.createElement("P");
         total_elt.appendChild(document.createTextNode("Total Cost: $" + this.totalPayment().toFixed(2)));
+        total_elt.className = "card_total";
         var down_elt = document.createElement("P");
         down_elt.appendChild(document.createTextNode("You pay a down payment of $" + this.down + " plus..."));
-        var monthly_elt = document.createElement("P");
-        monthly_elt.appendChild(document.createTextNode("Monthly Cost: $" + this.monthlyPayment().toFixed(2) + " for " + this.months + " months"));
+        down_elt.className = "card_down";
+        var monthly_elt = document.createElement("DIV");
+        monthly_elt.innerHTML = "<h1>$" + this.monthlyPayment().toFixed(2) + "</h1><p>monthly for " + this.months + " months</p>"
+        monthly_elt.className = "card_payment";
         var permile_elt = document.createElement("P");
-        permile_elt.appendChild(document.createTextNode("Cost per Mile: $" + this.perMilePayment(miles_per_year).toFixed(2)));
+        permile_elt.innerHTML ="<h1>$" + this.perMilePayment(miles_per_year).toFixed(2) + "</h1><p>per mile</p>"
+        permile_elt.className = "card_payment";
         card.appendChild(name_elt);
         card.appendChild(dealer_elt);
         card.appendChild(total_elt);
         card.appendChild(down_elt);
-        card.appendChild(monthly_elt);
-        card.appendChild(permile_elt);
+        var cost_container = document.createElement("DIV");
+        cost_container.className = "card_cost_container";
+        cost_container.appendChild(monthly_elt);
+        cost_container.appendChild(permile_elt);
+        card.appendChild(cost_container);
         return card;
     }
 };
@@ -83,22 +92,31 @@ class Lease {
         var card = document.createElement("LI");
         var name_elt = document.createElement("H2");
         name_elt.appendChild(document.createTextNode(this.period + "-Month Lease: " + this.name));
+        name_elt.className = "card_name";
         var dealer_elt = document.createElement("P");
         dealer_elt.appendChild(document.createTextNode("Dealer: " + this.dealer));
+        dealer_elt.className = "card_dealer";
         var total_elt = document.createElement("P");
         total_elt.appendChild(document.createTextNode("Total Cost: $" + this.totalPayment(miles_per_year).toFixed(2)));
+        total_elt.className = "card_total";
         var ccr_elt = document.createElement("P");
         ccr_elt.appendChild(document.createTextNode("You pay a capital cost reduction of $" + this.ccr + " plus..."));
+        ccr_elt.className = "card_down";
         var monthly_elt = document.createElement("P");
-        monthly_elt.appendChild(document.createTextNode("Monthly Cost: $" + this.monthlyPayment(miles_per_year).toFixed(2) + " for " + this.period + " months"));
+        monthly_elt.innerHTML = "<h1>$" + this.monthlyPayment(miles_per_year).toFixed(2) + "</h1><p>monthly for " + this.period + " months"
+        monthly_elt.className = "card_payment";
         var permile_elt = document.createElement("P");
-        permile_elt.appendChild(document.createTextNode("Cost per Mile: $" + this.perMilePayment(miles_per_year).toFixed(2)));            
+        permile_elt.innerHTML = "<h1>$" + this.perMilePayment(miles_per_year).toFixed(2) + "</h1><p>per mile"            
+        permile_elt.className = "card_payment";
         card.appendChild(name_elt);
         card.appendChild(dealer_elt);
         card.appendChild(total_elt);
         card.appendChild(ccr_elt);
-        card.appendChild(monthly_elt);
-        card.appendChild(permile_elt);
+        var cost_container = document.createElement("DIV");
+        cost_container.className = "card_cost_container";
+        cost_container.appendChild(monthly_elt);
+        cost_container.appendChild(permile_elt);
+        card.appendChild(cost_container);
         return card;
     }
 };

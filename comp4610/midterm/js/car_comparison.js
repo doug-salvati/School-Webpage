@@ -27,7 +27,12 @@ class Ownership {
         var initial_cost = this.msrp - this.disc - this.rebate;
         var principal = initial_cost - this.down;
         var monthly_interest = this.interest / 100 / 12;
-        var monthly_payment = (monthly_interest * principal) / (1 - Math.pow(1 + monthly_interest, - this.months));
+        if (monthly_interest > 0) {
+            var monthly_payment = (monthly_interest * principal) / (1 - Math.pow(1 + monthly_interest, - this.months));
+        } else {
+            var monthly_payment = principal / this.months;
+        }
+
         return monthly_payment;
     }
     // Calculate total cost over period

@@ -22,6 +22,7 @@ class Ownership {
         this.months = months;
         this.interest = interest;
     }
+    // Calculate cost per month
     monthlyPayment() {
         var initial_cost = this.msrp - this.disc - this.rebate;
         var principal = initial_cost - this.down;
@@ -29,12 +30,15 @@ class Ownership {
         var monthly_payment = (monthly_interest * principal) / (1 - Math.pow(1 + monthly_interest, - this.months));
         return monthly_payment;
     }
+    // Calculate total cost over period
     totalPayment() {
         return (this.monthlyPayment() * this.months) + this.down;
     }
+    // Calculate cost per month during pay-off period
     perMilePayment(miles_per_year) {
         return (this.totalPayment() / (miles_per_year * (this.months / 12)));
     }
+    // Returns a string with the details of the car
     printDetails() {
         var str = "Name: " + this.name + '\n';
         str += "Dealer: " + this.dealer + '\n';
@@ -46,6 +50,7 @@ class Ownership {
         str += "Interest: " + this.interest + "%\n";
         return str;
     }
+    // Creates an HTML element summarizing the car
     getCard(miles_per_year) {
         var card = document.createElement("LI");
         var name_elt = document.createElement("H2");
@@ -84,6 +89,7 @@ class Ownership {
 };
 
 // Class for an option involving leasing a car
+// All methods are analagous
 class Lease {
     constructor(name, dealer, monthly_pmt, miles_included, extra, ccr, period) {
         this.name = name;
@@ -183,6 +189,7 @@ var listofcars = {
             (function(i) { list[i].querySelector(".detail_btn").onclick = function(){func(i);} })(i);
         }
     },
+    // Sort options on top of page trigger this function
     sort_by: function(key, miles_per_year) {
         if (key == 'price') {
             var comparison = function(x, y) {

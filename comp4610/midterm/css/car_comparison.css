@@ -17,6 +17,7 @@ body {
     font-family: sans-serif;
 }
 
+/* Heading floats above the rest of the content so it's always easy to add */
 #heading_area {
     background-color: white;
     padding: 25px;
@@ -51,10 +52,6 @@ body {
     color: green;
 }
 
-#add_a_car_form {
-    display: none;
-}
-
 #lease {
     display: none;
 }
@@ -73,7 +70,10 @@ body {
 }
 
 /* Add A Car Menu */
+/* The form comes up only when you ask.  It's also a pop up that is
+    fixed with the header */
 #add_a_car_form {
+    display: none;
     background: white;
     margin: 25px;
     padding: 25px;

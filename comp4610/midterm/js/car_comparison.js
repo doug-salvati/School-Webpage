@@ -1,3 +1,15 @@
+// Douglas Salvati
+// Douglas_Salvati@student.uml.edu
+// Computer Science Department, UMass Lowell
+// COMP.4610 GUI Programming 1
+// File: /usr/cs/2018/dsalvati/public_html/comp4610/midterm/js/car_comparison.js
+// Created: 23 October 2017
+// Modified: 29 October 2017
+
+// Description: This script runs the Car Comparison app.
+// It contains classes for Ownerships and Leases, and sets
+// up some event handlers to create and manage them.
+
 // Class for an option involving car ownership
 class Ownership {
     constructor(name, dealer, msrp, disc, rebate, down, months, interest) {
@@ -23,6 +35,17 @@ class Ownership {
     perMilePayment(miles_per_year) {
         return (this.totalPayment() / (miles_per_year * (this.months / 12)));
     }
+    printDetails() {
+        var str = "Name: " + this.name + '\n';
+        str += "Dealer: " + this.dealer + '\n';
+        str += "MSRP: $" + this.msrp + '\n';
+        str += "Dealer Discount: $" + this.disc + '\n';
+        str += "Rebate: $" + this.rebate + '\n';
+        str += "Down Payment: $" + this.down + '\n';
+        str += "Months to Pay: $" + this.months + '\n';
+        str += "Interest: " + this.interest + "%\n";
+        return str;
+    }
     getCard(miles_per_year) {
         var card = document.createElement("LI");
         var name_elt = document.createElement("H2");
@@ -43,6 +66,9 @@ class Ownership {
         var permile_elt = document.createElement("P");
         permile_elt.innerHTML ="<h1>$" + this.perMilePayment(miles_per_year).toFixed(2) + "</h1><p>per mile</p>"
         permile_elt.className = "card_payment";
+        var detail_btn = document.createElement("BUTTON");
+        detail_btn.appendChild(document.createTextNode("More Details"));
+        detail_btn.className = "detail_btn";
         card.appendChild(name_elt);
         card.appendChild(dealer_elt);
         card.appendChild(total_elt);
@@ -52,6 +78,7 @@ class Ownership {
         cost_container.appendChild(monthly_elt);
         cost_container.appendChild(permile_elt);
         card.appendChild(cost_container);
+        card.appendChild(detail_btn);
         return card;
     }
 };
@@ -88,6 +115,16 @@ class Lease {
     perMilePayment(miles_per_year) {
         return (this.totalPayment(miles_per_year) / (miles_per_year * (this.period / 12)));
     }
+    printDetails() {
+        var str = "Name: " + this.name + '\n';
+        str += "Dealer: " + this.dealer + '\n';
+        str += "Monthly Payment: $" + this.monthly_pmt + '\n';
+        str += "Miles Included: " + this.miles_included + '\n';
+        str += "Cost per Extra Mile: $" + this.extra + '\n';
+        str += "Capital Cost Reduction: $" + this.ccr + '\n';
+        str += "Period of lease: " + this.period + " months\n";
+        return str;
+    }
     getCard(miles_per_year) {
         var card = document.createElement("LI");
         var name_elt = document.createElement("H2");
@@ -108,6 +145,9 @@ class Lease {
         var permile_elt = document.createElement("P");
         permile_elt.innerHTML = "<h1>$" + this.perMilePayment(miles_per_year).toFixed(2) + "</h1><p>per mile"            
         permile_elt.className = "card_payment";
+        var detail_btn = document.createElement("BUTTON");
+        detail_btn.appendChild(document.createTextNode("More Details"));
+        detail_btn.className = "detail_btn";
         card.appendChild(name_elt);
         card.appendChild(dealer_elt);
         card.appendChild(total_elt);
@@ -117,6 +157,7 @@ class Lease {
         cost_container.appendChild(monthly_elt);
         cost_container.appendChild(permile_elt);
         card.appendChild(cost_container);
+        card.appendChild(detail_btn);
         return card;
     }
 };
@@ -129,12 +170,18 @@ var listofcars = {
     },
     // Replaces li's in a list with the newest values
     // Learned about this technique from https://stackoverflow.com/questions/8837191/sort-an-html-list-with-javascript
-    draw_cards: function(replace, miles_per_year) {
+    // func is run when you click on a card
+    draw_cards: function(replace, miles_per_year, func) {
         var cards = replace.cloneNode(false);
         for (var i = 0; i < this.list.length; ++i) {
             cards.appendChild(this.list[i].getCard(miles_per_year));
         }
         replace.parentNode.replaceChild(cards, replace);
+        var list = document.getElementsByTagName("li");
+        var i;
+        for (i = 0; i < list.length; i++) {
+            (function(i) { list[i].querySelector(".detail_btn").onclick = function(){func(i);} })(i);
+        }
     },
     sort_by: function(key, miles_per_year) {
         if (key == 'price') {
@@ -155,6 +202,12 @@ var listofcars = {
         this.list = this.list.sort(comparison);
     }
 };
+
+// View details about car - function that will be used later
+showDetails = function(i) {
+    var car = listofcars.list[i];
+    alert(car.printDetails());
+}
 
 // Event Handlers
 window.onload = function() {
@@ -206,7 +259,7 @@ window.onload = function() {
         var miles_per_year = Number(document.getElementsByName("miles_per_year")[0].value);
         if (document.getElementById("radio_price").checked) listofcars.sort_by('price', miles_per_year);
         else listofcars.sort_by('name', miles_per_year);
-        listofcars.draw_cards(document.getElementById("carlist"), miles_per_year)
+        listofcars.draw_cards(document.getElementById("carlist"), miles_per_year, showDetails)
         document.getElementById("add_a_car_form").style.display = "none";
     };
 
@@ -214,12 +267,12 @@ window.onload = function() {
     document.getElementById("radio_price").onclick = function() {
         var miles_per_year = Number(document.getElementsByName("miles_per_year")[0].value);
         listofcars.sort_by('price', miles_per_year);
-        listofcars.draw_cards(document.getElementById("carlist"), miles_per_year);
+        listofcars.draw_cards(document.getElementById("carlist"), miles_per_year, showDetails);
     };
     document.getElementById("radio_name").onclick = function() {
         var miles_per_year = Number(document.getElementsByName("miles_per_year")[0].value);
         listofcars.sort_by('name', miles_per_year);
-        listofcars.draw_cards(document.getElementById("carlist"), miles_per_year);
+        listofcars.draw_cards(document.getElementById("carlist"), miles_per_year, showDetails);
     };
 
     // Detect changed miles per year
@@ -227,6 +280,6 @@ window.onload = function() {
         var miles_per_year = Number(document.getElementsByName("miles_per_year")[0].value);
         if (document.getElementById("radio_price").checked) listofcars.sort_by('price', miles_per_year);
         else listofcars.sort_by('name', miles_per_year);
-        listofcars.draw_cards(document.getElementById("carlist"), miles_per_year);
+        listofcars.draw_cards(document.getElementById("carlist"), miles_per_year, showDetails);
     }
 };

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Assignment 4</title>
+        <!-- JQuery CDN -->
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+        <script src="js/hw4.js"></script>
+        <link rel="stylesheet" href="css/hw4.css">
+    </head>
+    <body>
+        <div id="part-one-enter-data">
+            <form id="enter-data-form">
+                <input type='button' id='add-price' value='Add Price'>
+                <input type='button' id='add-mpg' value='Add MPG'>
+                <input type='button' id='submit' value='Submit'>
+                <h2>Constants</h2>
+                Miles per Year: <input type="number" id="mpy"><br/>
+                Cost per Gallon: $<input type="number" id="cpg"><br/>
+                Time Period: <input type="number" id="time"> months<br/>
+                <h2>Prices</h2>
+                <ol id="price-list">
+                    <li>
+                        Price: $<input type="number" class="price">
+                    </li>
+                </ol>
+                <h2>Mileages</h2>
+                <ol id="mpg-list">
+                    <li>
+                        Miles per Gallon: <input type="number" class="mpg">
+                    </li>
+                </ol>
+            </form>
+        </div>
+        <div id="part-two-view-table">
+            <input type='button' id='edit' value='Edit Data'>
+            <h2>Your Table:</h2>
+            <table id="data-table">
+                
+            </table>  
+        </div>
+    </body>
+</html>

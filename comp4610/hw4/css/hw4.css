@@ -1,0 +1,8 @@
+#part-two-view-table {
+    display: none;
+}
+
+table, tr, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}

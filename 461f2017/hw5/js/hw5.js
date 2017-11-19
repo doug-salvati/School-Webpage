@@ -30,13 +30,19 @@ costPerMonth = function(price, mileage, mpy, cpg, time) {
 
 // Event handlers load when page is ready
 $(document).ready(function() {
-    // JQuery Input Validation plugin
+    // JQuery Input Validation Plugin
     $('#enter-data-form').validate({
-        rules: {
-            min: {
-                param: 1
-            }
+        messages: {
+            mpy: { required: "We need to know how many miles you'll be driving." },
+            cpg: { required: "The cost of gas is needed to determine your price per mile." },
+            time: { required: "This is necessary to show you cost per month." }
         }
+    });
+    $(".price").rules("add", { 
+        messages: { required: "A table entry can't be blank!" }
+    });
+    $(".mpg").rules("add", { 
+        messages: { required: "A table entry can't be blank!" }
     });
 
     // Add a price entry
@@ -53,6 +59,9 @@ $(document).ready(function() {
         // Initially invisible, then slide-in animation
         elt.style = "display: none";
         $(elt).appendTo('#price-list').slideDown('fast');
+        $(".price").each(function () {
+            $(this).rules('add', {messages: {required: "A table entry can't be blank!"}});
+        });
     });
 
     // Add a mileage entry
@@ -67,6 +76,9 @@ $(document).ready(function() {
         elt.appendChild(del);
         elt.style = "display: none";
         $(elt).appendTo('#mpg-list').slideDown('fast');
+        $(".mpg").each(function () {
+            $(this).rules('add', {messages: {required: "A table entry can't be blank!"}});
+        });
     });
 
     // Transition to table view, assuming values are correct

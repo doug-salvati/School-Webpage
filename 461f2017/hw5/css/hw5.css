@@ -5,7 +5,7 @@
     COMP.4610 GUI Programming 1
     File: /usr/cs/2018/dsalvati/public_html/comp4610/hw4/css/hw4.css
     Created: 11 November 2017
-    Modified: 12 November 2017
+    Modified: 19 November 2017
 
     Description: This file contains the CSS rules for the car table
     program.  It borrows many stylistic choices from the midterm
@@ -67,14 +67,4 @@ table, tr, td {
 /* Highlights on major row and column */
 tr:first-child, td:first-child {
     background-color: #63d5e4;
-}
-
-/* Class applied to invalid input fields */
-.error {
-    border: 1px solid red;
-}
-
-#error-msg {
-    color: red;
-    display: none;
 }

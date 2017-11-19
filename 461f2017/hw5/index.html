@@ -6,7 +6,7 @@
     COMP.4610 GUI Programming 1
     File: /usr/cs/2018/dsalvati/public_html/comp4610/hw4/index.html
     Created: 11 November 2017
-    Modified: 12 November 2017
+    Modified: 19 November 2017
 
     Description: This document is the layout for the car table application.
     It is a single-page application with two parts, each in different divs
@@ -18,6 +18,8 @@
         <title>Assignment 4</title>
         <!-- JQuery CDN -->
         <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+        <!-- JQuery Input Validation Plugin -->
+        <script src="js/jquery.validate.min.js"></script>
         <script src="js/hw5.js"></script>
         <link rel="stylesheet" href="css/hw5.css">
     </head>
@@ -31,21 +33,20 @@
                     <input type='button' id='submit' value='Submit'>
                 </div>
                 <div class="data-entry">
-                    <p id="error-msg"><i>The indicated fields should be positive numbers.</i></p>
                     <h2>Constants</h2>
-                    <ul><li>Miles per Year: <input type="number" id="mpy"></li>
-                    <li>Cost per Gallon: $<input type="number" id="cpg"></li>
-                    <li>Time Period: <input type="number" id="time"> months</li></ul>
+                    <ul><li>Miles per Year: <input type="number" id="mpy" name="mpy" min="1" required></li>
+                    <li>Cost per Gallon: $<input type="number" id="cpg" name="cpg" min="0" required></li>
+                    <li>Months: <input type="number" id="time" name="time" min="1" required></li></ul>
                     <h2>Prices</h2>
                     <ol id="price-list">
                         <li>
-                            Price: $<input type="number" class="price">
+                            Price: $<input type="number" class="price" name="initial-price" min="0" required>
                         </li>
                     </ol>
                     <h2>Mileages</h2>
                     <ol id="mpg-list">
                         <li>
-                            Miles per Gallon: <input type="number" class="mpg">
+                            Miles per Gallon: <input type="number" class="mpg" name="initial-mpg" min="1" required>
                         </li>
                     </ol>
                 </div>  
@@ -56,7 +57,6 @@
             <h1> Car Comparison Table </h1>
             <input type='button' id='edit' value='Edit Data'>
         </div>
-        <h2>Your Table:</h2>
         <table id="data-table">
                 
             </table>  

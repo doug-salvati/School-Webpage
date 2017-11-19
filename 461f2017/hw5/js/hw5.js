@@ -4,12 +4,15 @@
 // COMP.4610 GUI Programming 1
 // File: /usr/cs/2018/dsalvati/public_html/comp4610/hw4/js/hw4.js
 // Created: 11 November 2017
-// Modified: 12 November 2017
+// Modified: 19 November 2017
 
 // Description: This script uses jQuery to control what
 // happens when certain buttons are clicked, managing the
 // transition from raw data input, to calculation, to
 // preparing the dynamic table.
+
+// Field counter to give unique names
+counter = 2;
 
 // Calculate costs - utility functions
 totalCost = function(price, mileage, mpy, cpg, time) {
@@ -27,10 +30,19 @@ costPerMonth = function(price, mileage, mpy, cpg, time) {
 
 // Event handlers load when page is ready
 $(document).ready(function() {
+    // JQuery Input Validation plugin
+    $('#enter-data-form').validate({
+        rules: {
+            min: {
+                param: 1
+            }
+        }
+    });
+
     // Add a price entry
     $('#add-price').click(function() {
         var elt = document.createElement("LI");
-        elt.innerHTML = 'Price: $<input type="number" class="price">';
+        elt.innerHTML = 'Price: $<input type="number" class="price" name="price-' + counter++ + '" min="0" required>';
         // Delete button
         var del = document.createElement("INPUT");
         del.type = "button";
@@ -47,7 +59,7 @@ $(document).ready(function() {
     // Analagous to previous
     $('#add-mpg').click(function() {
         var elt = document.createElement("LI");
-        elt.innerHTML = 'Miles per Gallon: <input type="number" class="mpg">';
+        elt.innerHTML = 'Miles per Gallon: <input type="number" class="mpg" name="mpg-' + counter++ + '" min="1" required>';
         var del = document.createElement("INPUT");
         del.type = "button";
         del.value = "Delete";
@@ -59,32 +71,21 @@ $(document).ready(function() {
 
     // Transition to table view, assuming values are correct
     $('#submit').click(function() {
-        // Get vars, input validation...
-        $('#error-msg').hide();
-        var error = false;
-        $(".error").removeClass("error");
+        // Check validation
+        if (!$('#enter-data-form').valid()) return;
+
         // Convert lists into arrays of values
         var prices = $(".price").map(function() {
             var ret = parseFloat(this.value);
-            // Turn input red if invalid
-            if (isNaN(ret) || (ret <= 0)) { $(this).addClass("error"); error = true; }
             return ret;
         });
         var mileages = $(".mpg").map(function() {
             var ret = parseFloat(this.value);
-            if (isNaN(ret) || (ret <= 0)) { $(this).addClass("error"); error = true; }
             return ret;
         });
         var mpy = parseFloat($("#mpy").val());
-        if (isNaN(mpy) || (mpy <= 0)) { $("#mpy").addClass("error"); error = true; }
         var cpg = parseFloat($("#cpg").val());
-        if (isNaN(cpg) || (cpg <= 0)) { $("#cpg").addClass("error"); error = true; }
         var time = parseFloat($("#time").val());
-        if (isNaN(time) || (time <= 0)) { $("#time").addClass("error"); error = true; }
-        if (error) {
-            $('#error-msg').show('fast');
-            return;
-        }
 
         // Clear table
         $('#part-one-enter-data').hide('fast');

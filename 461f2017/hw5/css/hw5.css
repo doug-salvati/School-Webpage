@@ -46,7 +46,7 @@ body {
 .data-entry {
     width: 90%;
     margin: auto;
-    background-color: #63d7e449;
+    background-color: rgba(99, 215, 228, 0.286);
     padding: 20px;
     border-radius: 10px;
 }
@@ -82,10 +82,10 @@ td {
    overflow: hidden!
 */
 tr:hover {
-    background-color: #63d7e479;
+    background-color: rgba(99, 215, 228, 0.475);
 }
 td:hover::after { 
-    background-color: #63d7e479;
+    background-color: rgba(99, 215, 228, 0.475);
     content: '';
     height: 10000px;
     left: 0;
@@ -97,7 +97,7 @@ td:hover::after {
 
 /* Highlights on major row and column */
 tr:first-child, td:first-child {
-    background-color: #63d7e47c;
+    background-color: rgba(99, 215, 228, 0.486);
 }
 
 /* Input validation */

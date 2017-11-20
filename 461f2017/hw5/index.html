@@ -24,15 +24,15 @@
         <link rel="stylesheet" href="css/hw5.css">
     </head>
     <body>
+        <div class="heading_area">
+            <h1> Car Comparison Table </h1>
+        </div>
         <div id="part-one-enter-data">
             <form id="enter-data-form">
-                <div class="heading_area">
-                    <h1> Car Comparison Table </h1>
+                <div class="data-entry">
                     <input type='button' id='add-price' value='Add Price'>
                     <input type='button' id='add-mpg' value='Add MPG'>
                     <input type='button' id='submit' value='Submit'>
-                </div>
-                <div class="data-entry">
                     <h2>Constants</h2>
                     <ul><li>Miles per Year: <input type="number" id="mpy" name="mpy" min="1" required></li>
                     <li>Cost per Gallon: $<input type="number" id="cpg" name="cpg" min="0" required></li>
@@ -53,13 +53,9 @@
             </form>
         </div>
         <div id="part-two-view-table">
-            <div class="heading_area">
-            <h1> Car Comparison Table </h1>
-            <input type='button' id='edit' value='Edit Data'>
-        </div>
+        <div class="center"><input type='button' id='edit' value='Edit Data'></div><br/>
         <table id="data-table">
-                
-            </table>  
+        </table>  
         </div>
     </body>
 </html>

@@ -32,17 +32,34 @@ costPerMonth = function(price, mileage, mpy, cpg, time) {
 $(document).ready(function() {
     // JQuery Input Validation Plugin
     $('#enter-data-form').validate({
+        // Custom messages, I decided the defaults for number being negative
+        // were what I wanted already
         messages: {
-            mpy: { required: "We need to know how many miles you'll be driving." },
-            cpg: { required: "The cost of gas is needed to determine your price per mile." },
-            time: { required: "This is necessary to show you cost per month." }
+            mpy: { required: "We need to know how many miles you'll be driving.",
+                   number: "Must be a number!" },
+            cpg: { required: "The cost of gas is needed to determine your price per mile.",
+                   number: "Must be a number!" },
+            time: { required: "This is necessary to show you cost per month.",
+                    number: "Must be a number!" }
+        },
+        // When you click on the field to start fixing, hide the error
+        // so you can delete the field
+        focusCleanup: true,
+        // Classes assigned to the labels that get made
+        errorClass: "invalid",
+        validClass: "valid",
+        // Have the error places with a fade-in animation
+        errorPlacement: function(error, element) {
+            $(error).hide().fadeIn('slow').insertAfter(element);
         }
     });
     $(".price").rules("add", { 
-        messages: { required: "A table entry can't be blank!" }
+        messages: { required: "A table entry can't be blank!",
+                    number: "Must be a number!" }
     });
     $(".mpg").rules("add", { 
-        messages: { required: "A table entry can't be blank!" }
+        messages: { required: "A table entry can't be blank!",
+                    number: "Must be a number!" }
     });
 
     // Add a price entry
@@ -59,8 +76,10 @@ $(document).ready(function() {
         // Initially invisible, then slide-in animation
         elt.style = "display: none";
         $(elt).appendTo('#price-list').slideDown('fast');
+        // Dynamically add custom messages to new li's
         $(".price").each(function () {
-            $(this).rules('add', {messages: {required: "A table entry can't be blank!"}});
+            $(this).rules('add', {messages: {required: "A table entry can't be blank!",
+                                             number: "Must be a number!"}});
         });
     });
 
@@ -77,7 +96,8 @@ $(document).ready(function() {
         elt.style = "display: none";
         $(elt).appendTo('#mpg-list').slideDown('fast');
         $(".mpg").each(function () {
-            $(this).rules('add', {messages: {required: "A table entry can't be blank!"}});
+            $(this).rules('add', {messages: {required: "A table entry can't be blank!",
+                                             number: "Must be a number!"}});
         });
     });
 
@@ -100,8 +120,7 @@ $(document).ready(function() {
         var time = parseFloat($("#time").val());
 
         // Clear table
-        $('#part-one-enter-data').hide('fast');
-        $('#part-two-view-table').show('fast');
+        $('#part-one-enter-data').fadeOut('fast', function() {$('#part-two-view-table').fadeIn('slow'); });
         $("#data-table").html("");
 
         // Table header
@@ -109,7 +128,7 @@ $(document).ready(function() {
         thead.appendChild(document.createElement("TD"));
         for (i = 0; i < prices.length; ++i) {
             var td = document.createElement("TD");
-            td.innerHTML = "$" + prices[i];
+            td.innerHTML = "$" + prices[i] + " Car";
             thead.appendChild(td);
             $(thead).appendTo('#data-table');
         }
@@ -118,7 +137,7 @@ $(document).ready(function() {
         for (j = 0; j < mileages.length; ++j) {
             var tr = document.createElement("TR");
             var first = document.createElement("TD");
-            first.innerHTML = mileages[j];
+            first.innerHTML = mileages[j] + " mpg";
             tr.appendChild(first);
             for (i = 0; i < prices.length; ++i) {
                 var td = document.createElement("TD");
@@ -132,7 +151,6 @@ $(document).ready(function() {
 
     // Return to previous view to edit values
     $('#edit').click(function() {
-        $('#part-one-enter-data').show('fast');
-        $('#part-two-view-table').hide('fast');
+        $('#part-two-view-table').fadeOut('fast', function() {$('#part-one-enter-data').fadeIn('slow'); });
     });
 });

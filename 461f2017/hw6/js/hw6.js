@@ -2,9 +2,9 @@
 // Douglas_Salvati@student.uml.edu
 // Computer Science Department, UMass Lowell
 // COMP.4610 GUI Programming 1
-// File: /usr/cs/2018/dsalvati/public_html/comp4610/hw5/js/hw5.js
+// File: /usr/cs/2018/dsalvati/public_html/comp4610/hw6/js/hw6.js
 // Created: 11 November 2017
-// Modified: 19 November 2017
+// Modified: 29 November 2017
 
 // Description: This script uses jQuery to control what
 // happens when certain buttons are clicked, managing the

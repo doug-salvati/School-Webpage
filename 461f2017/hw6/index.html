@@ -24,7 +24,7 @@
         <script src="js/hw6.js"></script>
         <!-- My Stylesheet and the JQuery UI one -->
         <link rel="stylesheet" href="css/hw6.css">
-        <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+        <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/cupertino/jquery-ui.css">
     </head>
     <body>
         <div class="heading_area">
@@ -44,6 +44,7 @@
                         <ol id="price-list">
                             <li>
                                 $<input type="number" class="price" name="initial-price" min="0" max="1000000" required>
+                                <div id="initial-price-slider" class="slider"></div>
                             </li>
                         </ol>
                     </div>
@@ -52,6 +53,7 @@
                         <ol id="mpg-list">
                             <li>
                                 MPG <input type="number" class="mpg" name="initial-mpg" min="1" max="1000000" required>
+                                <div id="initial-mpg-slider" class="slider"></div>
                             </li>
                         </ol>
                     </div>

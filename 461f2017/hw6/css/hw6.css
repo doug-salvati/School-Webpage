@@ -62,6 +62,16 @@ body {
     border: 1px solid #324750;
 }
 
+li {
+    padding: 5px;
+}
+
+/* Give sliders some breathing room */
+.slider {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
 /* Table is initially not shown */
 #part-two-view-table {
     display: none;

@@ -30,6 +30,10 @@ costPerMonth = function(price, mileage, mpy, cpg, time) {
 
 // Event handlers load when page is ready
 $(document).ready(function() {
+    // Sliders
+    $("#initial-price-slider").slider();
+    $("#initial-mpg-slider").slider();
+
     // JQuery Input Validation Plugin
     $('#enter-data-form').validate({
         // Custom messages, I decided the defaults for number being negative
@@ -73,6 +77,11 @@ $(document).ready(function() {
         // Onclick, deletes itself
         del.onclick = function() {this.parentElement.parentElement.removeChild(this.parentElement);};
         elt.appendChild(del);
+        // Slider
+        var slider = document.createElement("DIV");
+        $(slider).attr("class", "slider");
+        $(slider).slider();
+        elt.appendChild(slider);
         // Initially invisible, then slide-in animation
         elt.style = "display: none";
         $(elt).appendTo('#price-list').slideDown('fast');
@@ -93,6 +102,10 @@ $(document).ready(function() {
         del.value = "X";
         del.onclick = function() {this.parentElement.parentElement.removeChild(this.parentElement);};
         elt.appendChild(del);
+        var slider = document.createElement("DIV");
+        $(slider).attr("class", "slider");
+        $(slider).slider();
+        elt.appendChild(slider);
         elt.style = "display: none";
         $(elt).appendTo('#mpg-list').slideDown('fast');
         $(".mpg").each(function () {

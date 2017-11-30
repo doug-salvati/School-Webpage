@@ -11,6 +11,9 @@
 // transition from raw data input, to calculation, to
 // preparing the dynamic table.
 
+price_options = {min: 1000, max: 100000, step: 1000, value: 5000}
+mpg_options = {min: 1, max: 100, step: 1, value: 25}
+
 // Field counter to give unique names
 counter = 2;
 
@@ -31,8 +34,24 @@ costPerMonth = function(price, mileage, mpy, cpg, time) {
 // Event handlers load when page is ready
 $(document).ready(function() {
     // Sliders
-    $("#initial-price-slider").slider();
-    $("#initial-mpg-slider").slider();
+    $("#initial-price-slider").slider(price_options);
+    $("#initial-price-slider").on("slide", function(e,u) {
+        var value = u.value;
+        $("input[name=initial-price]").val(value);
+    });
+    $("input[name=initial-price]").on("input", function(e) {
+        var value = $(this).val();
+        $("#initial-price-slider").slider("value", value);
+    });
+    $("#initial-mpg-slider").slider(mpg_options);
+    $("#initial-mpg-slider").on("slide", function(e,u) {
+        var value = u.value;
+        $("input[name=initial-mpg]").val(value);
+    });
+    $("input[name=initial-mpg]").on("input", function(e) {
+        var value = $(this).val();
+        $("#initial-mpg-slider").slider("value", value);
+    });
 
     // JQuery Input Validation Plugin
     $('#enter-data-form').validate({
@@ -69,7 +88,8 @@ $(document).ready(function() {
     // Add a price entry
     $('#add-price').click(function() {
         var elt = document.createElement("LI");
-        elt.innerHTML = '$<input type="number" class="price" name="price-' + counter++ + '" min="0" max="1000000" required>';
+        var name = 'price-' + counter++
+        elt.innerHTML = '$<input type="number" class="price" name="' + name + '" value="5000" min="1000" max="100000" required>';
         // Delete button
         var del = document.createElement("INPUT");
         del.type = "button";
@@ -80,7 +100,11 @@ $(document).ready(function() {
         // Slider
         var slider = document.createElement("DIV");
         $(slider).attr("class", "slider");
-        $(slider).slider();
+        $(slider).slider(price_options);
+        $(slider).on("slide", function(e,u) {
+            var value = u.value;
+            $("input[name=" + name + "]").val(value);
+        });
         elt.appendChild(slider);
         // Initially invisible, then slide-in animation
         elt.style = "display: none";
@@ -90,13 +114,19 @@ $(document).ready(function() {
             $(this).rules('add', {messages: {required: "A table entry can't be blank!",
                                              number: "Must be a number!"}});
         });
+        // Second-way binding
+        $("input[name=" + name + "]").on("input", function(e) {
+            var value = $(this).val();
+            $(slider).slider("value", value);
+        });
     });
 
     // Add a mileage entry
     // Analagous to previous
     $('#add-mpg').click(function() {
         var elt = document.createElement("LI");
-        elt.innerHTML = 'MPG <input type="number" class="mpg" name="mpg-' + counter++ + '" min="1" max="1000000" required>';
+        var name = "mpg-" + counter++;
+        elt.innerHTML = 'MPG <input type="number" class="mpg" name="' + name + '" value="25" min="1" max="100" required>';
         var del = document.createElement("INPUT");
         del.type = "button";
         del.value = "X";
@@ -104,13 +134,21 @@ $(document).ready(function() {
         elt.appendChild(del);
         var slider = document.createElement("DIV");
         $(slider).attr("class", "slider");
-        $(slider).slider();
+        $(slider).slider(mpg_options);
+        $(slider).on("slide", function(e,u) {
+            var value = u.value;
+            $("input[name=" + name + "]").val(value);
+        });
         elt.appendChild(slider);
         elt.style = "display: none";
         $(elt).appendTo('#mpg-list').slideDown('fast');
         $(".mpg").each(function () {
             $(this).rules('add', {messages: {required: "A table entry can't be blank!",
                                              number: "Must be a number!"}});
+        });
+        $("input[name=" + name + "]").on("input", function(e) {
+            var value = $(this).val();
+            $(slider).slider("value", value);
         });
     });
 

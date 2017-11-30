@@ -43,12 +43,23 @@ body {
 }
 
 /* Give data entry a simple but comfortable design */
-.data-entry {
-    width: 90%;
-    margin: auto;
+.constants, .param {
+    margin: 10px;
     background-color: rgba(99, 215, 228, 0.286);
     padding: 20px;
     border-radius: 10px;
+    text-align: left;
+}
+.constants, .params {
+    width: 90%;
+    margin-left: 5%;
+    margin-right: 5%;
+}
+.param {
+    float: left;
+    min-width: 20%;
+    margin: 0;
+    border: 1px solid #324750;
 }
 
 /* Table is initially not shown */

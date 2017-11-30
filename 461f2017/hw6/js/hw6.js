@@ -65,11 +65,11 @@ $(document).ready(function() {
     // Add a price entry
     $('#add-price').click(function() {
         var elt = document.createElement("LI");
-        elt.innerHTML = 'Price: $<input type="number" class="price" name="price-' + counter++ + '" min="0" required>';
+        elt.innerHTML = '$<input type="number" class="price" name="price-' + counter++ + '" min="0" max="1000000" required>';
         // Delete button
         var del = document.createElement("INPUT");
         del.type = "button";
-        del.value = "Delete";
+        del.value = "X";
         // Onclick, deletes itself
         del.onclick = function() {this.parentElement.parentElement.removeChild(this.parentElement);};
         elt.appendChild(del);
@@ -87,10 +87,10 @@ $(document).ready(function() {
     // Analagous to previous
     $('#add-mpg').click(function() {
         var elt = document.createElement("LI");
-        elt.innerHTML = 'Miles per Gallon: <input type="number" class="mpg" name="mpg-' + counter++ + '" min="1" required>';
+        elt.innerHTML = 'MPG <input type="number" class="mpg" name="mpg-' + counter++ + '" min="1" max="1000000" required>';
         var del = document.createElement("INPUT");
         del.type = "button";
-        del.value = "Delete";
+        del.value = "X";
         del.onclick = function() {this.parentElement.parentElement.removeChild(this.parentElement);};
         elt.appendChild(del);
         elt.style = "display: none";

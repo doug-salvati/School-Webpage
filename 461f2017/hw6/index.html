@@ -32,27 +32,31 @@
         </div>
         <div id="part-one-enter-data">
             <form id="enter-data-form">
-                <div class="data-entry">
-                    <input type='button' id='add-price' value='Add Price'>
-                    <input type='button' id='add-mpg' value='Add MPG'>
-                    <input type='button' id='submit' value='Submit'>
+                <div class="constants">
                     <h2>Constants</h2>
-                    <ul><li>Miles per Year: <input type="number" id="mpy" name="mpy" min="1" required></li>
-                    <li>Cost per Gallon: $<input type="number" id="cpg" name="cpg" min="0" required></li>
-                    <li>Months: <input type="number" id="time" name="time" min="1" required></li></ul>
-                    <h2>Prices</h2>
-                    <ol id="price-list">
-                        <li>
-                            Price: $<input type="number" class="price" name="initial-price" min="0" required>
-                        </li>
-                    </ol>
-                    <h2>Mileages</h2>
-                    <ol id="mpg-list">
-                        <li>
-                            Miles per Gallon: <input type="number" class="mpg" name="initial-mpg" min="1" required>
-                        </li>
-                    </ol>
-                </div>  
+                    Miles per Year: <input type="number" id="mpy" name="mpy" min="1" required> &#183;
+                    Cost per Gallon: $<input type="number" id="cpg" name="cpg" min="0" required> &#183;
+                    Months: <input type="number" id="time" name="time" min="1" required>
+                </div>
+                <div class="params">
+                    <div class="param">
+                        <h2>Prices <input type='button' id='add-price' value='+'></h2>
+                        <ol id="price-list">
+                            <li>
+                                $<input type="number" class="price" name="initial-price" min="0" max="1000000" required>
+                            </li>
+                        </ol>
+                    </div>
+                    <div class="param">
+                        <h2>Mileages <input type='button' id='add-mpg' value='+'></h2>
+                        <ol id="mpg-list">
+                            <li>
+                                MPG <input type="number" class="mpg" name="initial-mpg" min="1" max="1000000" required>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+                <input type='button' id='submit' value='Submit'>
             </form>
         </div>
         <div id="part-two-view-table">

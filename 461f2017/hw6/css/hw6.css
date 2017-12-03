@@ -64,9 +64,8 @@ input, select {
 }
 .param {
     float: left;
-    min-width: 20%;
     margin: 0;
-    border: 1px solid #324750;
+    border: 2px solid #324750;
 }
 
 li {
@@ -182,4 +181,7 @@ label.invalid:after {
 }
 .ui-widget-content {
     color: white;
+}
+.ui-closable-tab {
+    cursor: pointer;
 }

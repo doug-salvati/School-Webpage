@@ -11,11 +11,14 @@
 // transition from raw data input, to calculation, to
 // preparing the dynamic table.
 
-price_options = {min: 1000, max: 100000, step: 1000, value: 5000}
-mpg_options = {min: 1, max: 100, step: 1, value: 25}
+// Slider options
+var price_options = {min: 1000, max: 100000, step: 1000, value: 5000};
+var mpg_options = {min: 1, max: 100, step: 1, value: 25};
+var ins_options = {min: 0, max: 10000, step: 500, value: 1000};
+var park_options = {min: 0, max: 1000, step: 20, value: 100};
 
 // Field counter to give unique names
-counter = 2;
+var counter = 2;
 
 // Calculate costs - utility functions
 totalCost = function(price, mileage, mpy, cpg, time) {
@@ -36,6 +39,16 @@ var tabs_list = {
     tabs: ["part-one-enter-data"],
     add_tab: function(id) {
         this.tabs.push(id);
+        return this.tabs.length - 1;
+    },
+    remove_tab: function(id) {
+        var idx = this.tabs.indexOf(id);
+        if (idx < 0) {
+            return false;
+        } else {
+            this.tabs.splice(idx, 1);
+            return true;
+        }
     },
     is_open: function(id) {
         return this.tabs.indexOf(id);
@@ -63,10 +76,10 @@ render_table = function(param1c, param2c, tab_id) {
 
     // Table header
     var thead = document.createElement("TR");
-    thead.appendChild(document.createElement("TD"));
+    $(thead).append("<td><i>Horizontal axis represents " + param1c.substr(1) + "s.</i><br/><i>Vertical axis represents " + param2c.substr(1) + "s.</i></td>");
     for (i = 0; i < vals1.length; ++i) {
         var td = document.createElement("TD");
-        td.innerHTML = "$" + vals1[i] + " Car";
+        td.innerHTML = vals1[i];
         thead.appendChild(td);
         $(thead).appendTo(table);
     }
@@ -75,17 +88,17 @@ render_table = function(param1c, param2c, tab_id) {
     for (j = 0; j < vals2.length; ++j) {
         var tr = document.createElement("TR");
         var first = document.createElement("TD");
-        first.innerHTML = vals2[j] + " mpg";
+        first.innerHTML = vals2[j];
         tr.appendChild(first);
         for (i = 0; i < vals1.length; ++i) {
             var td = document.createElement("TD");
-            td.innerHTML = "$" + costPerMile(vals1[i], vals2[j], mpy, cpg, time) + "/mi, $" + costPerMonth(vals1[i], vals2[j], mpy, cpg, time) + "/mo";
+            //td.innerHTML = "$" + costPerMile(vals1[i], vals2[j], mpy, cpg, time) + "/mi, $" + costPerMonth(vals1[i], vals2[j], mpy, cpg, time) + "/mo";
+            td.innerHTML = "Blah Blah"
             tr.appendChild(td);
             $(tr).appendTo(table);
         }
     }
 }
-
 
 // Event handlers load when page is ready
 $(document).ready(function() {
@@ -93,24 +106,21 @@ $(document).ready(function() {
     $("#tabs").tabs();
 
     // Sliders
-    $("#initial-price-slider").slider(price_options);
-    $("#initial-price-slider").on("slide", function(e,u) {
-        var value = u.value;
-        $("input[name=initial-price]").val(value);
-    });
-    $("input[name=initial-price]").on("input", function(e) {
-        var value = $(this).val();
-        $("#initial-price-slider").slider("value", value);
-    });
-    $("#initial-mpg-slider").slider(mpg_options);
-    $("#initial-mpg-slider").on("slide", function(e,u) {
-        var value = u.value;
-        $("input[name=initial-mpg]").val(value);
-    });
-    $("input[name=initial-mpg]").on("input", function(e) {
-        var value = $(this).val();
-        $("#initial-mpg-slider").slider("value", value);
-    });
+    setup_slider = function(slider, options, input) {
+        $(slider).slider(options);
+        $(slider).on("slide", function(e,u) {
+            var value = u.value;
+            $(input).val(value);
+        });
+        $(input).on("input", function(e) {
+            var value = $(this).val();
+            $(slider).slider("value", value);
+        });
+    }
+    setup_slider("#initial-price-slider", price_options, "input[name=initial-price]");
+    setup_slider("#initial-mpg-slider", mpg_options, "input[name=initial-mpg]");
+    setup_slider("#initial-ins-slider", ins_options, "input[name=initial-ins]");
+    setup_slider("#initial-park-slider", park_options, "input[name=initial-park]");
 
     // JQuery Input Validation Plugin
     $('#enter-data-form').validate({
@@ -144,11 +154,10 @@ $(document).ready(function() {
                     number: "Must be a number!" }
     });
 
-    // Add a price entry
-    $('#add-price').click(function() {
+    // Add entries to input lists
+    add_entry = function(classname, input, options, listid, name)  {
         var elt = document.createElement("LI");
-        var name = 'price-' + counter++
-        elt.innerHTML = '$<input type="number" class="price" name="' + name + '" value="5000" min="1000" max="100000" required>';
+        elt.innerHTML = input;
         // Delete button
         var del = document.createElement("INPUT");
         del.type = "button";
@@ -159,17 +168,18 @@ $(document).ready(function() {
         // Slider
         var slider = document.createElement("DIV");
         $(slider).attr("class", "slider");
-        $(slider).slider(price_options);
+        $(slider).slider(options);
         $(slider).on("slide", function(e,u) {
+            console.log(name);
             var value = u.value;
             $("input[name=" + name + "]").val(value);
         });
         elt.appendChild(slider);
         // Initially invisible, then slide-in animation
         elt.style = "display: none";
-        $(elt).appendTo('#price-list').slideDown('fast');
+        $(elt).appendTo(listid).slideDown('fast');
         // Dynamically add custom messages to new li's
-        $(".price").each(function () {
+        $("." + classname).each(function () {
             $(this).rules('add', {messages: {required: "A table entry can't be blank!",
                                              number: "Must be a number!"}});
         });
@@ -178,40 +188,38 @@ $(document).ready(function() {
             var value = $(this).val();
             $(slider).slider("value", value);
         });
-    });
+    }
 
+    // Add a price entry
+    $('#add-price').click(function() {
+        var name = "price-" + counter++;
+        add_entry('price',
+            '$<input type="number" class="price" name="' + name + '" value="5000" min="1000" max="100000" required>',
+            price_options, '#price-list', name);
+    });
     // Add a mileage entry
-    // Analagous to previous
     $('#add-mpg').click(function() {
-        var elt = document.createElement("LI");
         var name = "mpg-" + counter++;
-        elt.innerHTML = 'MPG <input type="number" class="mpg" name="' + name + '" value="25" min="1" max="100" required>';
-        var del = document.createElement("INPUT");
-        del.type = "button";
-        del.value = "X";
-        del.onclick = function() {this.parentElement.parentElement.removeChild(this.parentElement);};
-        elt.appendChild(del);
-        var slider = document.createElement("DIV");
-        $(slider).attr("class", "slider");
-        $(slider).slider(mpg_options);
-        $(slider).on("slide", function(e,u) {
-            var value = u.value;
-            $("input[name=" + name + "]").val(value);
-        });
-        elt.appendChild(slider);
-        elt.style = "display: none";
-        $(elt).appendTo('#mpg-list').slideDown('fast');
-        $(".mpg").each(function () {
-            $(this).rules('add', {messages: {required: "A table entry can't be blank!",
-                                             number: "Must be a number!"}});
-        });
-        $("input[name=" + name + "]").on("input", function(e) {
-            var value = $(this).val();
-            $(slider).slider("value", value);
-        });
+        add_entry('mpg',
+            'MPG <input type="number" class="mpg" name="' + name + '" value="25" min="1" max="100" required>',
+            mpg_options, '#mpg-list', name);
+    });
+    // Add an insurance entry
+    $('#add-ins').click(function() {
+        var name = "ins-" + counter++;
+        add_entry('ins',
+            'yearly $<input type="number" class="insurance_cost" name="' + name + '" value="1000" min="1" max="10000" required>',
+            ins_options, '#ins-list', name);
+    });
+    // Add a parking entry
+    $('#add-park').click(function() {
+        var name = "park-" + counter++;
+        add_entry('park',
+            'monthly $<input type="number" class="parking_cost" name="' + name + '" value="100" min="1" max="1000" required>',
+            park_options, '#park-list', name);
     });
 
-    // Create a new tab, assuming values are correct
+    // Get a table, assuming values are correct
     $('#submit').click(function() {
         // Check validation
         if (!$('#enter-data-form').valid()) return;
@@ -226,6 +234,12 @@ $(document).ready(function() {
         tab_id = param1 + "-v-" + param2;
         tab_name = param1name + " vs " + param2name;
 
+        // Can't compare the same thing
+        if (param1 == param2) {
+            alert("You need to compare two different parameters.");
+            return;
+        }
+
         // If tab already exists, just switch to it
         if ((idx = tabs_list.is_open(tab_id)) >= 0) {
             $("#tabs").tabs( "option", "active", idx);
@@ -233,14 +247,18 @@ $(document).ready(function() {
         // Otherwise, create new tab
         else {
             $("#tabs").append("<div id='" + tab_id + "'><table class='data-table'></table></div>");
-            $("<li><a href='#" + tab_id + "'>" + tab_name + "</a></li>").appendTo("#tabs .ui-tabs-nav");
+            $("<li><a href='#" + tab_id + "'>" + tab_name + "</a><span class='ui-icon ui-icon-circle-close ui-closable-tab'></span></li>").appendTo("#tabs .ui-tabs-nav");
+            // Learned how to close a tab from http://jsfiddle.net/muVDN/, but I heavily customized the code
+            $(".ui-closable-tab").click(function(event, ui) {
+                var panel = $(this).closest("li").remove().attr("aria-controls");
+                $("#" + panel).remove();
+                tabs_list.remove_tab(panel);
+                $("#tabs").tabs("refresh");
+            });
             $("#tabs").tabs("refresh");
-            $("#tabs").tabs( "option", "active", 1);
-            tabs_list.add_tab(tab_id);
+            var new_idx = tabs_list.add_tab(tab_id);
+            $("#tabs").tabs( "option", "active", new_idx);
         }
-
-        // Render contents of tab
-        render_table(param1c, param2c, tab_id);
     });
 
     // Re-render a tab's contents on load in case
@@ -254,5 +272,4 @@ $(document).ready(function() {
             render_table(param1c, param2c, tab_id);
         }
     });
-
 });

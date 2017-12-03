@@ -31,12 +31,66 @@ costPerMonth = function(price, mileage, mpy, cpg, time) {
     return (totalCost(price, mileage, mpy, cpg, time) / time).toFixed(2);
 }
 
+// Global list of tabs
+var tabs_list = {
+    tabs: ["part-one-enter-data"],
+    add_tab: function(id) {
+        this.tabs.push(id);
+    },
+    is_open: function(id) {
+        return this.tabs.indexOf(id);
+    }
+}
+
+// Table renderer
+render_table = function(param1c, param2c, tab_id) {
+    // Convert lists into arrays of values
+    var vals1 = $(param1c).map(function() {
+        var ret = parseFloat(this.value);
+        return ret;
+    });
+    var vals2 = $(param2c).map(function() {
+        var ret = parseFloat(this.value);
+        return ret;
+    });
+    var mpy = parseFloat($("#mpy").val());
+    var cpg = parseFloat($("#cpg").val());
+    var time = parseFloat($("#time").val());
+
+    // Create Table
+    var table = $("#" + tab_id + " > .data-table")
+    table.html("");
+
+    // Table header
+    var thead = document.createElement("TR");
+    thead.appendChild(document.createElement("TD"));
+    for (i = 0; i < vals1.length; ++i) {
+        var td = document.createElement("TD");
+        td.innerHTML = "$" + vals1[i] + " Car";
+        thead.appendChild(td);
+        $(thead).appendTo(table);
+    }
+
+    // Table rows
+    for (j = 0; j < vals2.length; ++j) {
+        var tr = document.createElement("TR");
+        var first = document.createElement("TD");
+        first.innerHTML = vals2[j] + " mpg";
+        tr.appendChild(first);
+        for (i = 0; i < vals1.length; ++i) {
+            var td = document.createElement("TD");
+            td.innerHTML = "$" + costPerMile(vals1[i], vals2[j], mpy, cpg, time) + "/mi, $" + costPerMonth(vals1[i], vals2[j], mpy, cpg, time) + "/mo";
+            tr.appendChild(td);
+            $(tr).appendTo(table);
+        }
+    }
+}
+
+
 // Event handlers load when page is ready
 $(document).ready(function() {
     // Tabs
-    var tabs = $("#tabs").tabs({activate: function(event, ui) {
-        console.log("tab change");}
-    });
+    $("#tabs").tabs();
 
     // Sliders
     $("#initial-price-slider").slider(price_options);
@@ -162,49 +216,43 @@ $(document).ready(function() {
         // Check validation
         if (!$('#enter-data-form').valid()) return;
 
-        // Convert lists into arrays of values
-        var prices = $(".price").map(function() {
-            var ret = parseFloat(this.value);
-            return ret;
-        });
-        var mileages = $(".mpg").map(function() {
-            var ret = parseFloat(this.value);
-            return ret;
-        });
-        var mpy = parseFloat($("#mpy").val());
-        var cpg = parseFloat($("#cpg").val());
-        var time = parseFloat($("#time").val());
+        // See what's being compared
+        param1 = $("#param1").find(":selected").val();
+        param2 = $("#param2").find(":selected").val();
+        param1name = $("#param1").find(":selected").text();
+        param2name = $("#param2").find(":selected").text();
+        param1c = "." + param1;
+        param2c = "." + param2;
+        tab_id = param1 + "-v-" + param2;
+        tab_name = param1name + " vs " + param2name;
 
-        // Create new table in tab
-        tabs.append("<div id='price-v-miles'><table id='data-table'></table></div>");
-        $("<li><a href='#price-v-miles'>Price vs Mileage</a></li>").appendTo("#tabs .ui-tabs-nav");
-        $("#tabs").tabs("refresh");
-        $( "#tabs" ).tabs( "option", "active", 1);
-        $("#data-table").html("");
-
-        // Table header
-        var thead = document.createElement("TR");
-        thead.appendChild(document.createElement("TD"));
-        for (i = 0; i < prices.length; ++i) {
-            var td = document.createElement("TD");
-            td.innerHTML = "$" + prices[i] + " Car";
-            thead.appendChild(td);
-            $(thead).appendTo('#data-table');
+        // If tab already exists, just switch to it
+        if ((idx = tabs_list.is_open(tab_id)) >= 0) {
+            $("#tabs").tabs( "option", "active", idx);
+        }
+        // Otherwise, create new tab
+        else {
+            $("#tabs").append("<div id='" + tab_id + "'><table class='data-table'></table></div>");
+            $("<li><a href='#" + tab_id + "'>" + tab_name + "</a></li>").appendTo("#tabs .ui-tabs-nav");
+            $("#tabs").tabs("refresh");
+            $("#tabs").tabs( "option", "active", 1);
+            tabs_list.add_tab(tab_id);
         }
 
-        // Table rows
-        for (j = 0; j < mileages.length; ++j) {
-            var tr = document.createElement("TR");
-            var first = document.createElement("TD");
-            first.innerHTML = mileages[j] + " mpg";
-            tr.appendChild(first);
-            for (i = 0; i < prices.length; ++i) {
-                var td = document.createElement("TD");
-                td.innerHTML = "$" + costPerMile(prices[i], mileages[j], mpy, cpg, time) + "/mi, $" + costPerMonth(prices[i], mileages[j], mpy, cpg, time) + "/mo";
-                tr.appendChild(td);
-                tr.style = "display: none";
-                $(tr).appendTo('#data-table').show("fast");
-            }
+        // Render contents of tab
+        render_table(param1c, param2c, tab_id);
+    });
+
+    // Re-render a tab's contents on load in case
+    // inputs have changed.
+    $("#tabs").on("tabsactivate", function(event, ui) {
+        var tab_id = ui.newPanel.attr("id");
+        if (tab_id != "part-one-enter-data") {
+            var split = tab_id.split("-");
+            var param1c = "." + split[0];
+            var param2c = "." + split[2];
+            render_table(param1c, param2c, tab_id);
         }
     });
+
 });

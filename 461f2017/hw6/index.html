@@ -30,41 +30,49 @@
         <div class="heading_area">
             <h1> Car Comparison Table </h1>
         </div>
-        <div id="part-one-enter-data">
-            <form id="enter-data-form">
-                <div class="constants">
-                    <h2>Constants</h2>
-                    Miles per Year: <input type="number" id="mpy" name="mpy" min="1" required> &#183;
-                    Cost per Gallon: $<input type="number" id="cpg" name="cpg" min="0" required> &#183;
-                    Months: <input type="number" id="time" name="time" min="1" required>
-                </div>
-                <div class="params">
-                    <div class="param">
-                        <h2>Prices <input type='button' id='add-price' value='+'></h2>
-                        <ol id="price-list">
-                            <li>
-                                $<input type="number" class="price" name="initial-price" value="5000" min="0" max="100000" required>
-                                <div id="initial-price-slider" class="slider"></div>
-                            </li>
-                        </ol>
+        <div id="tabs">
+            <ul>
+                <li><a href="#part-one-enter-data">Data Entry</a></li>
+            </ul>
+            <div id="part-one-enter-data">
+                <form id="enter-data-form">
+                    <div class="center">Compare
+                        <select>
+                            <option value="comp-prices">Prices</option>
+                        </select>
+                        and
+                        <select>
+                                <option value="comp-prices">Mileages</option>
+                        </select>
+                        <input type='button' id='submit' value='GO'></div>
+                    <div class="constants">
+                        <h2>Constants</h2>
+                        Miles per Year: <input type="number" id="mpy" name="mpy" min="1" required> &#183;
+                        Cost per Gallon: $<input type="number" id="cpg" name="cpg" min="0" required> &#183;
+                        Months: <input type="number" id="time" name="time" min="1" required>
                     </div>
-                    <div class="param">
-                        <h2>Mileages <input type='button' id='add-mpg' value='+'></h2>
-                        <ol id="mpg-list">
-                            <li>
-                                MPG <input type="number" class="mpg" name="initial-mpg" value="25" min="1" max="100" required>
-                                <div id="initial-mpg-slider" class="slider"></div>
-                            </li>
-                        </ol>
+                    <div class="params">
+                        <div class="param">
+                            <h2>Prices <input type='button' id='add-price' value='+'></h2>
+                            <ol id="price-list">
+                                <li>
+                                    $<input type="number" class="price" name="initial-price" value="5000" min="0" max="100000" required>
+                                    <div id="initial-price-slider" class="slider"></div>
+                                </li>
+                            </ol>
+                        </div>
+                        <div class="param">
+                            <h2>Mileages <input type='button' id='add-mpg' value='+'></h2>
+                            <ol id="mpg-list">
+                                <li>
+                                    MPG <input type="number" class="mpg" name="initial-mpg" value="25" min="1" max="100" required>
+                                    <div id="initial-mpg-slider" class="slider"></div>
+                                </li>
+                            </ol>
+                        </div>
                     </div>
-                </div>
-                <input type='button' id='submit' value='Submit'>
-            </form>
-        </div>
-        <div id="part-two-view-table">
-        <div class="center"><input type='button' id='edit' value='Edit Data'></div><br/>
-        <table id="data-table">
-        </table>  
+                </form>
+            </div>
         </div>
     </body>
 </html>

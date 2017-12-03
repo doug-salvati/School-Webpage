@@ -33,6 +33,11 @@ costPerMonth = function(price, mileage, mpy, cpg, time) {
 
 // Event handlers load when page is ready
 $(document).ready(function() {
+    // Tabs
+    var tabs = $("#tabs").tabs({activate: function(event, ui) {
+        console.log("tab change");}
+    });
+
     // Sliders
     $("#initial-price-slider").slider(price_options);
     $("#initial-price-slider").on("slide", function(e,u) {
@@ -152,7 +157,7 @@ $(document).ready(function() {
         });
     });
 
-    // Transition to table view, assuming values are correct
+    // Create a new tab, assuming values are correct
     $('#submit').click(function() {
         // Check validation
         if (!$('#enter-data-form').valid()) return;
@@ -170,8 +175,11 @@ $(document).ready(function() {
         var cpg = parseFloat($("#cpg").val());
         var time = parseFloat($("#time").val());
 
-        // Clear table
-        $('#part-one-enter-data').fadeOut('fast', function() {$('#part-two-view-table').fadeIn('slow'); });
+        // Create new table in tab
+        tabs.append("<div id='price-v-miles'><table id='data-table'></table></div>");
+        $("<li><a href='#price-v-miles'>Price vs Mileage</a></li>").appendTo("#tabs .ui-tabs-nav");
+        $("#tabs").tabs("refresh");
+        $( "#tabs" ).tabs( "option", "active", 1);
         $("#data-table").html("");
 
         // Table header
@@ -198,10 +206,5 @@ $(document).ready(function() {
                 $(tr).appendTo('#data-table').show("fast");
             }
         }
-    });
-
-    // Return to previous view to edit values
-    $('#edit').click(function() {
-        $('#part-two-view-table').fadeOut('fast', function() {$('#part-one-enter-data').fadeIn('slow'); });
     });
 });

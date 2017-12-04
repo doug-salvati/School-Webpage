@@ -36,19 +36,28 @@ var tabs_list = {
             return true;
         }
     },
+    get_id: function(idx) {
+        return this.tabs[idx];
+    },
     is_open: function(id) {
         return this.tabs.indexOf(id);
+    },
+    get_length: function() {
+        return this.tabs.length;
+    },
+    remove_range: function(r1, r2) {
+        this.tabs.splice(Math.min(r1, r2), (Math.abs(r2 - r1) + 1));
     }
 }
 
 // Table renderer
 render_table = function(param1c, param2c, tab_id) {
     // Convert lists into arrays of values
-    var vals1 = $(param1c).map(function() {
+    var vals1 = $("input" + param1c).map(function() {
         var ret = parseFloat(this.value);
         return ret;
     });
-    var vals2 = $(param2c).map(function() {
+    var vals2 = $("input" + param2c).map(function() {
         var ret = parseFloat(this.value);
         return ret;
     });
@@ -79,7 +88,6 @@ render_table = function(param1c, param2c, tab_id) {
         tr.appendChild(first);
         for (i = 0; i < vals1.length; ++i) {
             var td = document.createElement("TD");
-
             // Monthly cost of first param
             var monthly_cost1 = 0;
             if (param1c == ".insurance_cost") { monthly_cost1 = (vals1[i] / 12) }
@@ -88,10 +96,10 @@ render_table = function(param1c, param2c, tab_id) {
             else /* param1c == '.mpg' */ { monthly_cost1 = ((mpy / vals1[i] * cpg) / 12) } 
             // Monthly cost of second param
             var monthly_cost2 = 0;
-            if (param2c == ".insurance_cost") { monthly_cost2 = (vals2[i] / 12) }
-            else if (param2c == '.parking_cost') { monthly_cost2 = vals2[i] }
-            else if (param2c == '.price') { monthly_cost2 = (vals2[i] / time) }
-            else /* param2c == '.mpg' */ { monthly_cost2 = ((mpy / vals2[i] * cpg) / 12) } 
+            if (param2c == ".insurance_cost") { monthly_cost2 = (vals2[j] / 12) }
+            else if (param2c == '.parking_cost') { monthly_cost2 = vals2[j] }
+            else if (param2c == '.price') { monthly_cost2 = (vals2[j] / time) }
+            else /* param2c == '.mpg' */ { monthly_cost2 = ((mpy / vals2[j] * cpg) / 12) } 
             // Total costs
             var monthly_cost = (monthly_cost1 + monthly_cost2).toFixed(2);
             var permile_cost = (monthly_cost / (mpy / 12)).toFixed(2);
@@ -107,6 +115,34 @@ render_table = function(param1c, param2c, tab_id) {
 $(document).ready(function() {
     // Tabs
     $("#tabs").tabs();
+    $("#close-tabs").dialog({autoOpen: false, modal: true, title: "Tab Management", buttons: [
+        {text: "Cancel", click: function() {
+            $(this).dialog("close");
+        }},
+        {text: "Delete", click: function() {
+            var lo = $("#lower").find(":selected").val() - 1;
+            var hi = $("#upper").find(":selected").val() - 1;
+            for (i = Math.min(lo, hi); i <= Math.max(lo, hi); ++i) {
+                $("a[href='" + "#" + tabs_list.get_id(i) + "']").parent().remove();
+                $("#" + tabs_list.get_id(i)).remove();
+            }
+            tabs_list.remove_range(lo, hi);
+            $("#tabs").tabs("refresh");
+            $("#close-tabs").dialog("close");
+        }}]});
+    $("#open-dialog").click(function() {
+        if (tabs_list.get_length() <= 1) {
+            alert("No tabs to delete :)");
+            return;
+        }
+        $("#lower").html("");
+        $("#upper").html("");
+        for (i = 2; i <= tabs_list.get_length(); i++){
+            $("#lower").append($('<option></option>').val(i).html(i))
+            $("#upper").append($('<option></option>').val(i).html(i))
+        }
+        $("#close-tabs").dialog("open");
+    });
 
     // Sliders
     setup_slider = function(slider, options, input) {
@@ -173,7 +209,6 @@ $(document).ready(function() {
         $(slider).attr("class", "slider");
         $(slider).slider(options);
         $(slider).on("slide", function(e,u) {
-            console.log(name);
             var value = u.value;
             $("input[name=" + name + "]").val(value);
         });

@@ -18,13 +18,13 @@
         <title>Assignment 6</title>
         <!-- JQuery/UI CDN -->
         <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
-        <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
         <!-- JQuery Input Validation Plugin -->
         <script src="js/jquery.validate.min.js"></script>
         <script src="js/hw6.js"></script>
         <!-- My Stylesheet and the JQuery UI one -->
         <link rel="stylesheet" href="css/hw6.css">
-        <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/cupertino/jquery-ui.css">
+        <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/cupertino/jquery-ui.css">
     </head>
     <body>
         <div class="heading_area">
@@ -51,6 +51,10 @@
                             <option value="price">Price</option>
                         </select>
                         : <input type='button' id='submit' value='GO'></h2>
+                    <div class="center"><a id="open-dialog" href="#" style="color:white">Manage Tabs...</a></div>
+                    <div id="close-tabs">
+                        Delete tabs <select id="lower"></select> through <select id="upper"></select>.<br/>
+                    </div>
                     <div class="constants">
                         <h2>Constants</h2>
                         Miles per Year: <input type="number" id="mpy" name="mpy" min="1" required> &#183;

@@ -20,20 +20,6 @@ var park_options = {min: 0, max: 1000, step: 20, value: 100};
 // Field counter to give unique names
 var counter = 2;
 
-// Calculate costs - utility functions
-totalCost = function(price, mileage, mpy, cpg, time) {
-    var gallons_needed_per_year = mpy / mileage;
-    var cost_of_gas_per_year = gallons_needed_per_year * cpg;
-    var total_gas_price = cost_of_gas_per_year * (time / 12);
-    return total_gas_price + price;
-}
-costPerMile = function(price, mileage, mpy, cpg, time) {
-    return (totalCost(price, mileage, mpy, cpg, time) / (mpy * time / 12)).toFixed(2);
-}
-costPerMonth = function(price, mileage, mpy, cpg, time) {
-    return (totalCost(price, mileage, mpy, cpg, time) / time).toFixed(2);
-}
-
 // Global list of tabs
 var tabs_list = {
     tabs: ["part-one-enter-data"],
@@ -69,14 +55,15 @@ render_table = function(param1c, param2c, tab_id) {
     var mpy = parseFloat($("#mpy").val());
     var cpg = parseFloat($("#cpg").val());
     var time = parseFloat($("#time").val());
-
     // Create Table
     var table = $("#" + tab_id + " > .data-table")
     table.html("");
 
     // Table header
     var thead = document.createElement("TR");
-    $(thead).append("<td><i>Horizontal axis represents " + param1c.substr(1) + "s.</i><br/><i>Vertical axis represents " + param2c.substr(1) + "s.</i></td>");
+    $(thead).append("<td><i>Horizontal axis represents " + param1c.substr(1).replace("_"," ") +
+        "s.</i><br/><i>Vertical axis represents " + param2c.substr(1).replace("_"," ") +
+        "s.<br>The crossing represents the their combined costs.</i></td>");
     for (i = 0; i < vals1.length; ++i) {
         var td = document.createElement("TD");
         td.innerHTML = vals1[i];
@@ -92,8 +79,24 @@ render_table = function(param1c, param2c, tab_id) {
         tr.appendChild(first);
         for (i = 0; i < vals1.length; ++i) {
             var td = document.createElement("TD");
-            //td.innerHTML = "$" + costPerMile(vals1[i], vals2[j], mpy, cpg, time) + "/mi, $" + costPerMonth(vals1[i], vals2[j], mpy, cpg, time) + "/mo";
-            td.innerHTML = "Blah Blah"
+
+            // Monthly cost of first param
+            var monthly_cost1 = 0;
+            if (param1c == ".insurance_cost") { monthly_cost1 = (vals1[i] / 12) }
+            else if (param1c == '.parking_cost') { monthly_cost1 = vals1[i] }
+            else if (param1c == '.price') { monthly_cost1 = (vals1[i] / time) }
+            else /* param1c == '.mpg' */ { monthly_cost1 = ((mpy / vals1[i] * cpg) / 12) } 
+            // Monthly cost of second param
+            var monthly_cost2 = 0;
+            if (param2c == ".insurance_cost") { monthly_cost2 = (vals2[i] / 12) }
+            else if (param2c == '.parking_cost') { monthly_cost2 = vals2[i] }
+            else if (param2c == '.price') { monthly_cost2 = (vals2[i] / time) }
+            else /* param2c == '.mpg' */ { monthly_cost2 = ((mpy / vals2[i] * cpg) / 12) } 
+            // Total costs
+            var monthly_cost = (monthly_cost1 + monthly_cost2).toFixed(2);
+            var permile_cost = (monthly_cost / (mpy / 12)).toFixed(2);
+
+            td.innerHTML = "$" + permile_cost + "/mi, $" + monthly_cost + "/mo";
             tr.appendChild(td);
             $(tr).appendTo(table);
         }

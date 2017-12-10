@@ -11,9 +11,11 @@
 #   and generating the CSS.
 
 class Style
-    constructor: () ->
+    constructor: (selector) ->
+        @selector = selector
         @gradient_type = "left-right"
         @gradient = []
+        @transition_speed = 0
     
     resetGradient: () ->
         @gradient = []
@@ -28,7 +30,7 @@ class Style
                 return 1
             return 0
 
-    generateCSS: () ->
+    generateCSS: (no_trans = false) ->
         # INITIALIZE
         css = ""
         # SIZE
@@ -78,17 +80,41 @@ class Style
         else
             css += "background: white; "
 
-        console.log css.replace(/; /g,";\n")
+        # TRANSITIONS
+        unless (@transition_speed is 0) or no_trans
+            css += "-webkit-transition: all " + @transition_speed + "s; " # Safari
+            css += "transition: all " + @transition_speed + "s; " # Standard
+
         return css
 
-    readableCSS: () ->
-        @generateCSS().replace(/; /g,";\n")
+    readableCSS: (no_trans = false) ->
+        readable = "\t" + @generateCSS(no_trans).replace(/; /g,";\n\t")
+        readable.substr(0, readable.length - 1)
+
+    completeCSS: (selector = "", no_trans = false) ->
+        if selector.length > 0
+            selector + " {\n" + @readableCSS(no_trans) + "}"
+        else
+            @selector + " {\n" + @readableCSS(no_trans) + "}"
 
 $(document).ready () ->
-    # Global CSS object
-    styling = new Style()
+    # Global CSS objects
+    def = new Style("#target-div")
+    hover = new Style("#target-div:hover")
+    active = new Style("#target-div:active")
+    styling = def
+    preview_mode = false
 
-    # GRADIENT
+    applyStyles = () -> 
+        if preview_mode
+            $('#target-div').text("TRANSITION PREVIEW")
+            css = def.completeCSS() + '\n' + hover.completeCSS() + '\n' + active.completeCSS()
+            $('#dynamic_stylesheet').html(css)
+        else
+            $('#target-div').text("")
+            $("#dynamic_stylesheet").html(styling.completeCSS("#target-div", true))
+
+    # GRADIENT ############################################################################
     # Color picker
     picker = new CP(document.getElementById("grad-color-droplet"), false)
     picker.on "change", (color) ->
@@ -133,23 +159,48 @@ $(document).ready () ->
                 
         # Add the CSS
         styling.addGradientStop($("#grad-color-droplet").css('backgroundColor'), pct)
-        $('#target-div').attr("style", styling.generateCSS())
+        applyStyles()
     })
 
     # Direction
     $("input[name=grad-direction]").change () ->
         styling.gradient_type = $("input[name=grad-direction]:checked").val()
-        $('#target-div').attr("style", styling.generateCSS())
+        applyStyles()
 
     # Reset
     $('#grad-reset').click () ->
         styling.resetGradient()
-        $('#target-div').attr("style", styling.generateCSS())
+        applyStyles()
+
+    # TRANSITION ############################################################################
+    # Which state editing?
+    $("input[name=transi-state]").change () ->
+        currently_editing = $("input[name=transi-state]:checked").val()
+        switch currently_editing
+            when "default" then styling = def
+            when "hover" then styling = hover
+            when "click" then styling = active
+        applyStyles()
+    # View a preview of state effects
+    $("input[name=transi-preview]").change () ->
+        preview_mode = !preview_mode
+        if preview_mode
+            $("#lbl-preview-mode").html('<i class="fa fa-toggle-on fa-3x" aria-hidden="true"></i>')
+        else
+            $("#lbl-preview-mode").html('<i class="fa fa-toggle-off fa-3x" aria-hidden="true"></i>')
+        applyStyles()
+    # Choosing duration
+    $("select#transi-duration").on "change", () ->
+        def.transition_speed = parseFloat(this.value)
+        applyStyles()
 
     # Tabs
     $("#toolbar").tabs({active: 0});
     $("#generated-css").dialog {autoOpen: false, modal: true, width: "80%", title: "Copy & Paste CSS for Your Project", \
         buttons: [{text: "Done!", click: () -> $(this).dialog("close")}]}
     $("#generate-css").click () ->
-        $("#generated-css").text(styling.readableCSS())
+        css = def.completeCSS() + "\n\n"
+        css += hover.completeCSS() + "\n\n"
+        css += active.completeCSS()
+        $("#generated-css").text(css)
         $("#generated-css").dialog "open"

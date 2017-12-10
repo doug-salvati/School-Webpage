@@ -39,7 +39,7 @@ input {
     cursor: pointer;
 }
 #generated-css {
-    white-space: pre-line;
+    white-space: pre;
     font-family: monospace;
 }
 
@@ -62,12 +62,32 @@ input {
     height: 100%;
     vertical-align: middle;
     padding-left: 20px;
+    padding-top: 5px;
     color: #b1b1b1;
     text-align: center;
 }
 
 .tool-array {
     text-align: left;
+    line-height: 2em;
+}
+.tool-array-ctr {
+    text-align: center;
+    line-height: 2em;
+}
+label {
+    color: #b6b6b6;
+    cursor: pointer;
+    padding: 10px;
+}
+label:hover {
+    color: #646464;
+}
+input[type="radio"]:checked+label, input[type="checkbox"]:checked+label {
+    color: rgb(60, 128, 218);
+}
+button {
+    cursor: pointer;
 }
 
 .separator {
@@ -82,21 +102,13 @@ input {
     background: white;
     margin: auto;
     margin-top: 25px;
+    color: rgba(189, 189, 189, 0.5);
+    font-style: italic;
+    font-size: 2em;
+    padding: 10px;
 }
 
 /* GRADIENT */
-label {
-    color: #b6b6b6;
-    cursor: pointer;
-    padding: 10px;
-}
-label:hover {
-    color: #646464;
-}
-input[type="radio"]:checked+label {
-    color: #646464;
-}
-
 .droplet-and-clone {
     height: 60px;
     width: 60px;

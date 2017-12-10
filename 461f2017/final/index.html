@@ -27,6 +27,8 @@
         <script src="js/final.js"></script>
         <!-- My Stylesheet -->
         <link rel="stylesheet" href="css/final.css">
+        <!-- Spot for dynamic styling -->
+        <style id="dynamic_stylesheet"></style>
         <!-- JQuery UI Stylesheet -->
         <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/base/jquery-ui.css">
         <!-- Color Picker Stylesheet -->
@@ -35,17 +37,23 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     </head>
     <body>
+        <!-- HEADING -->
         <div id="heading">
-            <h1>CSS Code Generator</h1>
+            <h1>CSS<i class="fa fa-css3" aria-hidden="true"></i> Code Generator</h1>
             <h1><button id="generate-css">Get CSS</button></h1>
             <div id="generated-css"></div>
         </div>
+
+        <!-- TOOLBAR -->
         <div id="toolbar">
             <ul id="tabs-list">
-                <li><a href="#tab-gradient">Gradient</a></li>
-                <li><a href="#tab-another">Another Tab</a></li>
+                <li><a href="#tab-gradient"><i class="fa fa-paint-brush" aria-hidden="true"></i> Gradient</a></li>
+                <li><a href="#tab-transform"><i class="fa fa-repeat" aria-hidden="true"></i> Transform</a></li>
+                <li><a href="#tab-shadow"><i class="fa fa-moon-o" aria-hidden="true"></i> Shadow</a></li>
+                <li><a href="#tab-border"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Border</a></li>
+                <li><a href="#tab-transition"><i class="fa fa-angle-double-right" aria-hidden="true"></i> Transition</a></li>
             </ul>
-
+            <!-- Gradient -->
             <div id="tab-gradient">
                 <div class="tool">
                     <div id="grad-color-droplet" class="droplet-and-clone"></div><br/>
@@ -76,9 +84,49 @@
                     <button id="grad-reset"><i class="fa fa-refresh fa-3x" aria-hidden="true"></i></button><br/><br/>Reset
                 </div>
             </div>
-
-            <div id="tab-another">
-                Another tab
+            <!-- Transform -->
+            <div id="tab-transform">
+                Not Done Yet
+            </div>
+            <!-- Shadow -->
+            <div id="tab-shadow">
+                Not Done Yet
+            </div>
+            <!-- Border -->
+            <div id="tab-border">
+                Not Done Yet
+            </div>
+            <!-- Transition -->
+            <div id="tab-transition">
+                <div class="tool">
+                    <div class="tool-array-ctr">
+                        <input type="radio" name="transi-state" value="default" id="default" checked></input>
+                        <label for="default"><i class="fa fa-check-circle-o fa-2x" aria-hidden="true"></i> Default</label><br/>
+                        <input type="radio" name="transi-state" value="hover" id="hover"></input>
+                        <label for="hover"><i class="fa fa-mouse-pointer fa-2x" aria-hidden="true"></i> Hover</label><br/>
+                        <input type="radio" name="transi-state" value="click" id="click"></input>
+                        <label for="click"><i class="fa fa-hand-pointer-o fa-2x" aria-hidden="true"></i> Click</label><br/>
+                    </div>
+                    Currently Editing
+                </div>
+                <div class="tool separator"></div>
+                <div class="tool">
+                    <select id="transi-duration">
+                        <option value="0">Instantaneous</option>
+                        <option value="0.5">Very Fast</option>
+                        <option value="1">Fast</option>
+                        <option value="2">Medium</option>
+                        <option value="3">Slow</option>
+                        <option value="4">Very Slow</option>
+                    </select><br/><br/>
+                    Speed
+                </div>
+                <div class="tool separator"></div>
+                <div class="tool">
+                    <input type="checkbox" name="transi-preview" id="preview-mode"></input>
+                    <label for="preview-mode" id="lbl-preview-mode"><i class="fa fa-toggle-off fa-3x" aria-hidden="true"></i></label><br/>
+                    Preview
+                </div>
             </div>
         </div>
         <div id="target-div"></div>

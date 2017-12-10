@@ -14,9 +14,11 @@
   var Style;
 
   Style = class Style {
-    constructor() {
+    constructor(selector) {
+      this.selector = selector;
       this.gradient_type = "left-right";
       this.gradient = [];
+      this.transition_speed = 0;
     }
 
     resetGradient() {
@@ -38,7 +40,7 @@
       });
     }
 
-    generateCSS() {
+    generateCSS(no_trans = false) {
       var css, grad_color_list, grad_type_firefox, grad_type_opera, grad_type_safari, grad_type_std, i, len, ref, stop;
       // INITIALIZE
       css = "";
@@ -97,21 +99,50 @@
       } else {
         css += "background: white; ";
       }
-      console.log(css.replace(/; /g, ";\n"));
+      // TRANSITIONS
+      if (!((this.transition_speed === 0) || no_trans)) {
+        css += "-webkit-transition: all " + this.transition_speed + "s; "; // Safari
+        css += "transition: all " + this.transition_speed + "s; "; // Standard
+      }
       return css;
     }
 
-    readableCSS() {
-      return this.generateCSS().replace(/; /g, ";\n");
+    readableCSS(no_trans = false) {
+      var readable;
+      readable = "\t" + this.generateCSS(no_trans).replace(/; /g, ";\n\t");
+      return readable.substr(0, readable.length - 1);
+    }
+
+    completeCSS(selector = "", no_trans = false) {
+      if (selector.length > 0) {
+        return selector + " {\n" + this.readableCSS(no_trans) + "}";
+      } else {
+        return this.selector + " {\n" + this.readableCSS(no_trans) + "}";
+      }
     }
 
   };
 
   $(document).ready(function() {
-    var picker, styling;
-    // Global CSS object
-    styling = new Style();
-    // GRADIENT
+    var active, applyStyles, def, hover, picker, preview_mode, styling;
+    // Global CSS objects
+    def = new Style("#target-div");
+    hover = new Style("#target-div:hover");
+    active = new Style("#target-div:active");
+    styling = def;
+    preview_mode = false;
+    applyStyles = function() {
+      var css;
+      if (preview_mode) {
+        $('#target-div').text("TRANSITION PREVIEW");
+        css = def.completeCSS() + '\n' + hover.completeCSS() + '\n' + active.completeCSS();
+        return $('#dynamic_stylesheet').html(css);
+      } else {
+        $('#target-div').text("");
+        return $("#dynamic_stylesheet").html(styling.completeCSS("#target-div", true));
+      }
+    };
+    // GRADIENT ############################################################################
     // Color picker
     picker = new CP(document.getElementById("grad-color-droplet"), false);
     picker.on("change", function(color) {
@@ -173,18 +204,50 @@
         
         // Add the CSS
         styling.addGradientStop($("#grad-color-droplet").css('backgroundColor'), pct);
-        return $('#target-div').attr("style", styling.generateCSS());
+        return applyStyles();
       }
     });
     // Direction
     $("input[name=grad-direction]").change(function() {
       styling.gradient_type = $("input[name=grad-direction]:checked").val();
-      return $('#target-div').attr("style", styling.generateCSS());
+      return applyStyles();
     });
     // Reset
     $('#grad-reset').click(function() {
       styling.resetGradient();
-      return $('#target-div').attr("style", styling.generateCSS());
+      return applyStyles();
+    });
+    // TRANSITION ############################################################################
+    // Which state editing?
+    $("input[name=transi-state]").change(function() {
+      var currently_editing;
+      currently_editing = $("input[name=transi-state]:checked").val();
+      switch (currently_editing) {
+        case "default":
+          styling = def;
+          break;
+        case "hover":
+          styling = hover;
+          break;
+        case "click":
+          styling = active;
+      }
+      return applyStyles();
+    });
+    // View a preview of state effects
+    $("input[name=transi-preview]").change(function() {
+      preview_mode = !preview_mode;
+      if (preview_mode) {
+        $("#lbl-preview-mode").html('<i class="fa fa-toggle-on fa-3x" aria-hidden="true"></i>');
+      } else {
+        $("#lbl-preview-mode").html('<i class="fa fa-toggle-off fa-3x" aria-hidden="true"></i>');
+      }
+      return applyStyles();
+    });
+    // Choosing duration
+    $("select#transi-duration").on("change", function() {
+      def.transition_speed = parseFloat(this.value);
+      return applyStyles();
     });
     // Tabs
     $("#toolbar").tabs({
@@ -205,7 +268,11 @@
       ]
     });
     return $("#generate-css").click(function() {
-      $("#generated-css").text(styling.readableCSS());
+      var css;
+      css = def.completeCSS() + "\n\n";
+      css += hover.completeCSS() + "\n\n";
+      css += active.completeCSS();
+      $("#generated-css").text(css);
       return $("#generated-css").dialog("open");
     });
   });

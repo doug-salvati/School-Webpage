@@ -1,0 +1,45 @@
+/*
+    Douglas Salvati
+    Douglas_Salvati@student.uml.edu
+    Computer Science Department, UMass Lowell
+    COMP.4610 GUI Programming 1
+    File: /usr/cs/2018/dsalvati/public_html/comp4610/final/css/final.css
+    Created: 9 December 2017
+    Modified: 9 December 2017
+
+    Description: Style for the CSS code generator.
+*/
+
+body {
+    background-color: #e2e2e2;
+}
+
+.droplet-and-clone {
+    height: 50px;
+    width: 50px;
+    -ms-transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+    transform: rotate(45deg);
+    border-radius: 0 50px 50px 50px;
+    cursor: move;
+    border: 1px solid black;
+    z-index: 999;
+}
+
+#target-div {
+    height: 300px;
+    width: 300px;
+    background: white;
+}
+
+/* Customize color picker,
+   based on example from the distro */
+.color-picker.static {
+    display:inline-block;
+    position:static;
+}
+.color-picker.static .color-picker-control {
+    -webkit-box-shadow:none;
+    -moz-box-shadow:none;
+    box-shadow:none;
+}

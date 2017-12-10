@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<!--
+    Douglas Salvati
+    Douglas_Salvati@student.uml.edu
+    Computer Science Department, UMass Lowell
+    COMP.4610 GUI Programming 1
+    File: /usr/cs/2018/dsalvati/public_html/comp4610/final/index.html
+    Created: 9 December 2017
+    Modified: 9 December 2017
+
+    Description: For my application I propose an interface that allows you edit a blank div. There will be a menu to control some
+    settings but you will be able to visually pick colors, “paint” them on the gradient, rotate and transform the div
+    with your cursor, and more. All the while, all the associated CSS will be generated for you using the different
+    browser’s formats. It is not a full CSS editor, it’s just for those select properties that cause difficulties and really
+    need to be visualized to make design decisions.
+-->
+
+<html>
+    <head>
+        <title>Final Project</title>
+        <!-- JQuery/UI CDN -->
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+        <!-- Color Picker -->
+        <script src="js/colorpicker/color-picker.min.js"></script>
+        <!-- My Script - Compiled from Coffee -->
+        <script src="js/final.js"></script>
+        <!-- My Stylesheet -->
+        <link rel="stylesheet" href="css/final.css">
+        <!-- JQuery UI Stylesheet -->
+        <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/cupertino/jquery-ui.css">
+        <!-- Color Picker Stylesheet -->
+        <link rel="stylesheet" href="css/colorpicker/color-picker.min.css">
+    </head>
+    <body>
+        <h1>CSS Code Generator</h1>
+        <div id="grad-color-droplet" class="droplet-and-clone"></div>
+        <p><input type="text" id="grad-cp-text" hidden></p>
+        <div id="grad-colorpicker"></div>
+        <button id="grad-reset">Reset</button>
+        <input type="radio" name="grad-direction" value="left-right" checked>Left to Right</input>
+        <input type="radio" name="grad-direction" value="right-left">Right to Left</input>
+        <input type="radio" name="grad-direction" value="top-bottom">Top to Bottom</input>
+        <input type="radio" name="grad-direction" value="bottom-top">Bottom to Top</input>
+        <input type="radio" name="grad-direction" value="radial">Radial</input>
+        <div id="target-div"></div>
+    </body>
+</html>

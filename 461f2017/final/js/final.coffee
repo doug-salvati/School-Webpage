@@ -104,18 +104,23 @@ $(document).ready () ->
         # Percentage depends on direction of gradient
         switch styling.gradient_type
             when "left-right", "right-left"
-                left = ui.position.left - $('#target-div').position().left + $('#grad-color-droplet').width() / 2
+                left = ui.offset.left - $('#target-div').offset().left + $('#grad-color-droplet').width() / 2
                 pct = Math.floor(left / $('#target-div').width() * 100)
                 if styling.gradient_type is "right-left"
                     pct = 100 - pct
             when "top-bottom", "bottom-top"
-                top = ui.position.top - $('#target-div').position().top + $('#grad-color-droplet').height() / 2
+                console.log ui.position.top
+                console.log ui.offset.top
+                console.log $('#target-div').offset().top
+                console.log $('#grad-color-droplet').height() / 2
+                console.log $('#target-div').height()
+                top = ui.offset.top - $('#target-div').offset().top + $('#grad-color-droplet').height() / 2
                 pct = Math.floor(top / $('#target-div').height() * 100)
                 if styling.gradient_type is "bottom-top"
                     pct = 100 - pct
             when "radial"
-                x = ui.position.left - $('#target-div').position().left + $('#grad-color-droplet').width() / 2
-                y = top = ui.position.top - $('#target-div').position().top + $('#grad-color-droplet').height() / 2
+                x = ui.offset.left - $('#target-div').offset().left + $('#grad-color-droplet').width() / 2
+                y = top = ui.offset.top - $('#target-div').position().top + $('#grad-color-droplet').height() / 2
                 ctr_x = $('#target-div').width() / 2
                 ctr_y = $('#target-div').height() / 2
                 cnr_x = ctr_x * 2
@@ -140,3 +145,11 @@ $(document).ready () ->
     $('#grad-reset').click () ->
         styling.resetGradient()
         $('#target-div').attr("style", styling.generateCSS())
+
+    # Tabs
+    $("#toolbar").tabs({active: 0});
+    $("#generated-css").dialog {autoOpen: false, modal: true, width: "80%", title: "Copy & Paste CSS for Your Project", \
+        buttons: [{text: "Done!", click: () -> $(this).dialog("close")}]}
+    $("#generate-css").click () ->
+        $("#generated-css").text(styling.readableCSS())
+        $("#generated-css").dialog "open"

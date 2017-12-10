@@ -28,21 +28,59 @@
         <!-- My Stylesheet -->
         <link rel="stylesheet" href="css/final.css">
         <!-- JQuery UI Stylesheet -->
-        <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/cupertino/jquery-ui.css">
+        <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/base/jquery-ui.css">
         <!-- Color Picker Stylesheet -->
         <link rel="stylesheet" href="css/colorpicker/color-picker.min.css">
+        <!-- Using font awesome to get some cool symbols -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     </head>
     <body>
-        <h1>CSS Code Generator</h1>
-        <div id="grad-color-droplet" class="droplet-and-clone"></div>
-        <p><input type="text" id="grad-cp-text" hidden></p>
-        <div id="grad-colorpicker"></div>
-        <button id="grad-reset">Reset</button>
-        <input type="radio" name="grad-direction" value="left-right" checked>Left to Right</input>
-        <input type="radio" name="grad-direction" value="right-left">Right to Left</input>
-        <input type="radio" name="grad-direction" value="top-bottom">Top to Bottom</input>
-        <input type="radio" name="grad-direction" value="bottom-top">Bottom to Top</input>
-        <input type="radio" name="grad-direction" value="radial">Radial</input>
+        <div id="heading">
+            <h1>CSS Code Generator</h1>
+            <h1><button id="generate-css">Get CSS</button></h1>
+            <div id="generated-css"></div>
+        </div>
+        <div id="toolbar">
+            <ul id="tabs-list">
+                <li><a href="#tab-gradient">Gradient</a></li>
+                <li><a href="#tab-another">Another Tab</a></li>
+            </ul>
+
+            <div id="tab-gradient">
+                <div class="tool">
+                    <div id="grad-color-droplet" class="droplet-and-clone"></div><br/>
+                    Drag Me
+                </div>
+                <div class="tool">
+                    <input type="text" id="grad-cp-text" hidden>
+                    <div id="grad-colorpicker"></div>
+                </div>
+                <div class="tool separator"></div>
+                <div class="tool">
+                    <div class="tool-array">
+                        <input type="radio" name="grad-direction" value="left-right" id="left-right" checked></input>
+                        <label for="left-right"><i class="fa fa-arrow-right fa-3x" aria-hidden="true"></i></label>
+                        <input type="radio" name="grad-direction" value="top-bottom" id="top-bottom"></input>
+                        <label for="top-bottom"><i class="fa fa-arrow-down fa-3x" aria-hidden="true"></i></label>
+                        <input type="radio" name="grad-direction" value="radial" id="radial"></input>
+                        <label for="radial"><i class="fa fa-arrows-alt fa-3x" aria-hidden="true"></i></label><br/>
+                        <input type="radio" name="grad-direction" value="right-left" id="right-left"></input>
+                        <label for="right-left"><i class="fa fa-arrow-left fa-3x" aria-hidden="true"></i></label>
+                        <input type="radio" name="grad-direction" value="bottom-top" id="bottom-top"></input>
+                        <label for="bottom-top"><i class="fa fa-arrow-up fa-3x" aria-hidden="true"></i></label><br/>
+                    </div>
+                    Direction
+                </div>
+                <div class="tool separator"></div>
+                <div class="tool">
+                    <button id="grad-reset"><i class="fa fa-refresh fa-3x" aria-hidden="true"></i></button><br/><br/>Reset
+                </div>
+            </div>
+
+            <div id="tab-another">
+                Another tab
+            </div>
+        </div>
         <div id="target-div"></div>
     </body>
 </html>

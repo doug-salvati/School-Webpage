@@ -138,7 +138,7 @@
         switch (styling.gradient_type) {
           case "left-right":
           case "right-left":
-            left = ui.position.left - $('#target-div').position().left + $('#grad-color-droplet').width() / 2;
+            left = ui.offset.left - $('#target-div').offset().left + $('#grad-color-droplet').width() / 2;
             pct = Math.floor(left / $('#target-div').width() * 100);
             if (styling.gradient_type === "right-left") {
               pct = 100 - pct;
@@ -146,15 +146,20 @@
             break;
           case "top-bottom":
           case "bottom-top":
-            top = ui.position.top - $('#target-div').position().top + $('#grad-color-droplet').height() / 2;
+            console.log(ui.position.top);
+            console.log(ui.offset.top);
+            console.log($('#target-div').offset().top);
+            console.log($('#grad-color-droplet').height() / 2);
+            console.log($('#target-div').height());
+            top = ui.offset.top - $('#target-div').offset().top + $('#grad-color-droplet').height() / 2;
             pct = Math.floor(top / $('#target-div').height() * 100);
             if (styling.gradient_type === "bottom-top") {
               pct = 100 - pct;
             }
             break;
           case "radial":
-            x = ui.position.left - $('#target-div').position().left + $('#grad-color-droplet').width() / 2;
-            y = top = ui.position.top - $('#target-div').position().top + $('#grad-color-droplet').height() / 2;
+            x = ui.offset.left - $('#target-div').offset().left + $('#grad-color-droplet').width() / 2;
+            y = top = ui.offset.top - $('#target-div').position().top + $('#grad-color-droplet').height() / 2;
             ctr_x = $('#target-div').width() / 2;
             ctr_y = $('#target-div').height() / 2;
             cnr_x = ctr_x * 2;
@@ -177,9 +182,31 @@
       return $('#target-div').attr("style", styling.generateCSS());
     });
     // Reset
-    return $('#grad-reset').click(function() {
+    $('#grad-reset').click(function() {
       styling.resetGradient();
       return $('#target-div').attr("style", styling.generateCSS());
+    });
+    // Tabs
+    $("#toolbar").tabs({
+      active: 0
+    });
+    $("#generated-css").dialog({
+      autoOpen: false,
+      modal: true,
+      width: "80%",
+      title: "Copy & Paste CSS for Your Project",
+      buttons: [
+        {
+          text: "Done!",
+          click: function() {
+            return $(this).dialog("close");
+          }
+        }
+      ]
+    });
+    return $("#generate-css").click(function() {
+      $("#generated-css").text(styling.readableCSS());
+      return $("#generated-css").dialog("open");
     });
   });
 

@@ -12,11 +12,94 @@
 
 body {
     background-color: #e2e2e2;
+    margin: 0;
+    font-family: sans-serif;
+}
+
+input {
+    display: none;
+}
+
+/* Heading */
+#heading {
+    height: 100px;
+    padding-left: 10%;
+    padding-right: 10%;
+}
+#heading > * {
+    display: inline-block;
+}
+
+#generate-css {
+    position: absolute;
+    right: 10%;
+    padding: 10px;
+    color: white;
+    background: rgb(60, 128, 218);
+    cursor: pointer;
+}
+#generated-css {
+    white-space: pre-line;
+    font-family: monospace;
+}
+
+/* Tabs! */
+#toolbar {
+    height: 200px;
+    padding: 0;
+}
+
+#toolbar > div {
+    padding: 0;
+}
+
+#tabs-list {
+    padding: 0;
+}
+
+.tool {
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+    padding-left: 20px;
+    color: #b1b1b1;
+    text-align: center;
+}
+
+.tool-array {
+    text-align: left;
+}
+
+.separator {
+    width: 50px;
+}
+
+/* Main content (div) */
+
+#target-div {
+    height: 300px;
+    width: 300px;
+    background: white;
+    margin: auto;
+    margin-top: 25px;
+}
+
+/* GRADIENT */
+label {
+    color: #b6b6b6;
+    cursor: pointer;
+    padding: 10px;
+}
+label:hover {
+    color: #646464;
+}
+input[type="radio"]:checked+label {
+    color: #646464;
 }
 
 .droplet-and-clone {
-    height: 50px;
-    width: 50px;
+    height: 60px;
+    width: 60px;
     -ms-transform: rotate(45deg);
     -webkit-transform: rotate(45deg);
     transform: rotate(45deg);
@@ -24,12 +107,6 @@ body {
     cursor: move;
     border: 1px solid black;
     z-index: 999;
-}
-
-#target-div {
-    height: 300px;
-    width: 300px;
-    background: white;
 }
 
 /* Customize color picker,

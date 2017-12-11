@@ -232,6 +232,7 @@
         case "click":
           styling = active;
       }
+      $("#" + styling.gradient_type).prop('checked', true);
       return applyStyles();
     });
     // View a preview of state effects

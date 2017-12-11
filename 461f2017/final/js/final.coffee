@@ -180,6 +180,7 @@ $(document).ready () ->
             when "default" then styling = def
             when "hover" then styling = hover
             when "click" then styling = active
+        $("#" + styling.gradient_type).prop('checked', true)
         applyStyles()
     # View a preview of state effects
     $("input[name=transi-preview]").change () ->

@@ -16,7 +16,14 @@ class Style
         @gradient_type = "left-right"
         @gradient = []
         @transition_speed = 0
+        @transformation_skew = 0
     
+    resetAll: () ->
+        @gradient_type = "left-right"
+        @gradient = []
+        @transition_speed = 0
+        @transformation_skew = 0
+
     resetGradient: () ->
         @gradient = []
 
@@ -30,9 +37,11 @@ class Style
                 return 1
             return 0
 
-    generateCSS: (no_trans = false) ->
+    generateCSS: (no_x = "") ->
         # INITIALIZE
         css = ""
+        no_transi = no_x is "no-transi"
+        no_transf = no_x is "no-transf"
         # SIZE
         css += "height: 300px; "
         css += "width: 300px; "
@@ -80,22 +89,29 @@ class Style
         else
             css += "background: white; "
 
+        # TRANSFORMATIONS
+        # Skew
+        unless no_transf
+            css += "-ms-transform: skewX(" + @transformation_skew + "deg); " # IE
+            css += "-webkit-transform: skewX(" + @transformation_skew + "deg); " # Safari
+            css += "transform: skewX(" + @transformation_skew + "deg); " # Standard
+
         # TRANSITIONS
-        unless (@transition_speed is 0) or no_trans
+        unless (@transition_speed is 0) or no_transi
             css += "-webkit-transition: all " + @transition_speed + "s; " # Safari
-            css += "transition: all " + @transition_speed + "s; " # Standard
+            css += "transition: all " + @transition_speed + "s; " # Standard\
 
         return css
 
-    readableCSS: (no_trans = false) ->
-        readable = "\t" + @generateCSS(no_trans).replace(/; /g,";\n\t")
+    readableCSS: (no_x = "") ->
+        readable = "\t" + @generateCSS(no_x).replace(/; /g,";\n\t")
         readable.substr(0, readable.length - 1)
 
-    completeCSS: (selector = "", no_trans = false) ->
+    completeCSS: (selector = "", no_x = "") ->
         if selector.length > 0
-            selector + " {\n" + @readableCSS(no_trans) + "}"
+            selector + " {\n" + @readableCSS(no_x) + "}"
         else
-            @selector + " {\n" + @readableCSS(no_trans) + "}"
+            @selector + " {\n" + @readableCSS(no_x) + "}"
 
 $(document).ready () ->
     # Global CSS objects
@@ -107,12 +123,12 @@ $(document).ready () ->
 
     applyStyles = () -> 
         if preview_mode
-            $('#target-div').text("TRANSITION PREVIEW")
+            $('#target-div').text("TRANSITION PREVIEW IS ON")
             css = def.completeCSS() + '\n' + hover.completeCSS() + '\n' + active.completeCSS()
             $('#dynamic_stylesheet').html(css)
         else
             $('#target-div').text("")
-            $("#dynamic_stylesheet").html(styling.completeCSS("#target-div", true))
+            $("#dynamic_stylesheet").html(styling.completeCSS("#target-div", "no-transi"))
 
     # GRADIENT ############################################################################
     # Color picker
@@ -126,6 +142,11 @@ $(document).ready () ->
     # Color dropper
     $('#grad-color-droplet').draggable({revert: "invalid", revertDuration: 200, scroll: false,
     helper: "clone", cursorAt: { top: 25, left: 25 } })
+    $('#grad-color-droplet').on 'dragstart', () ->
+        $("#dynamic_stylesheet").html(styling.completeCSS("#target-div", "no-transf"))
+    $('#grad-color-droplet').on 'dragstop', () ->
+        applyStyles()
+    
     $('#target-div').droppable({accept: ".droplet-and-clone", drop: (event, ui) ->
         # Percentage depends on direction of gradient
         switch styling.gradient_type
@@ -135,11 +156,6 @@ $(document).ready () ->
                 if styling.gradient_type is "right-left"
                     pct = 100 - pct
             when "top-bottom", "bottom-top"
-                console.log ui.position.top
-                console.log ui.offset.top
-                console.log $('#target-div').offset().top
-                console.log $('#grad-color-droplet').height() / 2
-                console.log $('#target-div').height()
                 top = ui.offset.top - $('#target-div').offset().top + $('#grad-color-droplet').height() / 2
                 pct = Math.floor(top / $('#target-div').height() * 100)
                 if styling.gradient_type is "bottom-top"
@@ -172,6 +188,13 @@ $(document).ready () ->
         styling.resetGradient()
         applyStyles()
 
+    # TRANSFORM #############################################################################
+    # Shear
+    $("#transf-skew").slider({min: -89, max: 89, step: 1, value: 0})
+    $("#transf-skew").on "slide", (event, ui) ->
+            styling.transformation_skew = -ui.value
+            applyStyles()
+
     # TRANSITION ############################################################################
     # Which state editing?
     $("input[name=transi-state]").change () ->
@@ -181,6 +204,7 @@ $(document).ready () ->
             when "hover" then styling = hover
             when "click" then styling = active
         $("#" + styling.gradient_type).prop('checked', true)
+        $("#transf-skew").slider {value: -styling.transformation_skew}
         applyStyles()
     # View a preview of state effects
     $("input[name=transi-preview]").change () ->
@@ -205,3 +229,10 @@ $(document).ready () ->
         css += active.completeCSS()
         $("#generated-css").text(css)
         $("#generated-css").dialog "open"
+    $("#reset-all").click () ->
+        def.resetAll()
+        hover.resetAll()
+        active.resetAll()
+        $("#left-right").prop('checked', true)
+        $("#transf-skew").slider {value: 0}
+        applyStyles()

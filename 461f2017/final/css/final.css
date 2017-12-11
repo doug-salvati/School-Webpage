@@ -30,6 +30,14 @@ input {
     display: inline-block;
 }
 
+#reset-all {
+    position: absolute;
+    right: 20%;
+    padding: 10px;
+    color: white;
+    background: rgb(218, 168, 60);
+    cursor: pointer;
+}
 #generate-css {
     position: absolute;
     right: 10%;
@@ -120,7 +128,6 @@ button {
     border: 1px solid black;
     z-index: 999;
 }
-
 /* Customize color picker,
    based on example from the distro */
 .color-picker.static {
@@ -131,4 +138,9 @@ button {
     -webkit-box-shadow:none;
     -moz-box-shadow:none;
     box-shadow:none;
+}
+
+/* TRANSFORM */
+#transf-skew {
+    width: 200px;
 }

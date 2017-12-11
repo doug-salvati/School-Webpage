@@ -19,6 +19,14 @@
       this.gradient_type = "left-right";
       this.gradient = [];
       this.transition_speed = 0;
+      this.transformation_skew = 0;
+    }
+
+    resetAll() {
+      this.gradient_type = "left-right";
+      this.gradient = [];
+      this.transition_speed = 0;
+      return this.transformation_skew = 0;
     }
 
     resetGradient() {
@@ -40,10 +48,12 @@
       });
     }
 
-    generateCSS(no_trans = false) {
-      var css, grad_color_list, grad_type_firefox, grad_type_opera, grad_type_safari, grad_type_std, i, len, ref, stop;
+    generateCSS(no_x = "") {
+      var css, grad_color_list, grad_type_firefox, grad_type_opera, grad_type_safari, grad_type_std, i, len, no_transf, no_transi, ref, stop;
       // INITIALIZE
       css = "";
+      no_transi = no_x === "no-transi";
+      no_transf = no_x === "no-transf";
       // SIZE
       css += "height: 300px; ";
       css += "width: 300px; ";
@@ -99,25 +109,33 @@
       } else {
         css += "background: white; ";
       }
+      // TRANSFORMATIONS
+      // Skew
+      if (!no_transf) {
+        css += "-ms-transform: skewX(" + this.transformation_skew + "deg); "; // IE
+        css += "-webkit-transform: skewX(" + this.transformation_skew + "deg); "; // Safari
+        css += "transform: skewX(" + this.transformation_skew + "deg); "; // Standard
+      }
+      
       // TRANSITIONS
-      if (!((this.transition_speed === 0) || no_trans)) {
+      if (!((this.transition_speed === 0) || no_transi)) {
         css += "-webkit-transition: all " + this.transition_speed + "s; "; // Safari
-        css += "transition: all " + this.transition_speed + "s; "; // Standard
+        css += "transition: all " + this.transition_speed + "s; "; // Standard\
       }
       return css;
     }
 
-    readableCSS(no_trans = false) {
+    readableCSS(no_x = "") {
       var readable;
-      readable = "\t" + this.generateCSS(no_trans).replace(/; /g, ";\n\t");
+      readable = "\t" + this.generateCSS(no_x).replace(/; /g, ";\n\t");
       return readable.substr(0, readable.length - 1);
     }
 
-    completeCSS(selector = "", no_trans = false) {
+    completeCSS(selector = "", no_x = "") {
       if (selector.length > 0) {
-        return selector + " {\n" + this.readableCSS(no_trans) + "}";
+        return selector + " {\n" + this.readableCSS(no_x) + "}";
       } else {
-        return this.selector + " {\n" + this.readableCSS(no_trans) + "}";
+        return this.selector + " {\n" + this.readableCSS(no_x) + "}";
       }
     }
 
@@ -134,12 +152,12 @@
     applyStyles = function() {
       var css;
       if (preview_mode) {
-        $('#target-div').text("TRANSITION PREVIEW");
+        $('#target-div').text("TRANSITION PREVIEW IS ON");
         css = def.completeCSS() + '\n' + hover.completeCSS() + '\n' + active.completeCSS();
         return $('#dynamic_stylesheet').html(css);
       } else {
         $('#target-div').text("");
-        return $("#dynamic_stylesheet").html(styling.completeCSS("#target-div", true));
+        return $("#dynamic_stylesheet").html(styling.completeCSS("#target-div", "no-transi"));
       }
     };
     // GRADIENT ############################################################################
@@ -161,6 +179,12 @@
         left: 25
       }
     });
+    $('#grad-color-droplet').on('dragstart', function() {
+      return $("#dynamic_stylesheet").html(styling.completeCSS("#target-div", "no-transf"));
+    });
+    $('#grad-color-droplet').on('dragstop', function() {
+      return applyStyles();
+    });
     $('#target-div').droppable({
       accept: ".droplet-and-clone",
       drop: function(event, ui) {
@@ -177,11 +201,6 @@
             break;
           case "top-bottom":
           case "bottom-top":
-            console.log(ui.position.top);
-            console.log(ui.offset.top);
-            console.log($('#target-div').offset().top);
-            console.log($('#grad-color-droplet').height() / 2);
-            console.log($('#target-div').height());
             top = ui.offset.top - $('#target-div').offset().top + $('#grad-color-droplet').height() / 2;
             pct = Math.floor(top / $('#target-div').height() * 100);
             if (styling.gradient_type === "bottom-top") {
@@ -217,6 +236,18 @@
       styling.resetGradient();
       return applyStyles();
     });
+    // TRANSFORM #############################################################################
+    // Shear
+    $("#transf-skew").slider({
+      min: -89,
+      max: 89,
+      step: 1,
+      value: 0
+    });
+    $("#transf-skew").on("slide", function(event, ui) {
+      styling.transformation_skew = -ui.value;
+      return applyStyles();
+    });
     // TRANSITION ############################################################################
     // Which state editing?
     $("input[name=transi-state]").change(function() {
@@ -233,6 +264,9 @@
           styling = active;
       }
       $("#" + styling.gradient_type).prop('checked', true);
+      $("#transf-skew").slider({
+        value: -styling.transformation_skew
+      });
       return applyStyles();
     });
     // View a preview of state effects
@@ -268,13 +302,23 @@
         }
       ]
     });
-    return $("#generate-css").click(function() {
+    $("#generate-css").click(function() {
       var css;
       css = def.completeCSS() + "\n\n";
       css += hover.completeCSS() + "\n\n";
       css += active.completeCSS();
       $("#generated-css").text(css);
       return $("#generated-css").dialog("open");
+    });
+    return $("#reset-all").click(function() {
+      def.resetAll();
+      hover.resetAll();
+      active.resetAll();
+      $("#left-right").prop('checked', true);
+      $("#transf-skew").slider({
+        value: 0
+      });
+      return applyStyles();
     });
   });
 

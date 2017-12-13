@@ -20,6 +20,7 @@
       this.gradient = [];
       this.transition_speed = 0;
       this.transformation_skew = 0;
+      this.transformation_angle = 0;
       this.shadows_on = false;
       this.shadow_darkness = 0;
       this.shadow_blur = 50;
@@ -117,9 +118,9 @@
       // TRANSFORMATIONS
       // Skew
       if (!no_transf) {
-        css += "-ms-transform: skewX(" + this.transformation_skew + "deg); "; // IE
-        css += "-webkit-transform: skewX(" + this.transformation_skew + "deg); "; // Safari
-        css += "transform: skewX(" + this.transformation_skew + "deg); "; // Standard
+        css += "-ms-transform: skewX(" + this.transformation_skew + "deg)" + "rotate(" + this.transformation_angle.toFixed(0) + "deg); "; // IE
+        css += "-webkit-transform: skewX(" + this.transformation_skew + "deg)" + "rotate(" + this.transformation_angle.toFixed(0) + "deg); "; // Safari
+        css += "transform: skewX(" + this.transformation_skew + "deg)" + "rotate(" + this.transformation_angle.toFixed(0) + "deg); "; // Standard
       }
       
       // SHADOWS
@@ -151,13 +152,15 @@
   };
 
   $(document).ready(function() {
-    var active, applyStyles, def, hover, picker, preview_mode, styling, tabswitcher;
+    var active, applyStyles, center_x, center_y, def, hover, picker, preview_mode, styling, tabswitcher;
     // Global CSS objects
     def = new Style("#target-div");
     hover = new Style("#target-div:hover");
     active = new Style("#target-div:active");
     styling = def;
     preview_mode = false;
+    center_x = $("#target-div").offset().left + $("#target-div").width() / 2;
+    center_y = $("#target-div").offset().top + $("#target-div").height() / 2;
     applyStyles = function() {
       var css;
       if (preview_mode) {
@@ -339,7 +342,7 @@
     });
     // Tabs
     tabswitcher = function(event, ui) {
-      var dragging_cursor, new_id, old_id, x_start, y_start;
+      var dragging_cursor, new_id, old_id, prev_angle, x_start, y_start;
       new_id = ui.newPanel[0].id;
       old_id = ui.oldPanel[0].id;
       // Clear bindings on the target div
@@ -370,6 +373,41 @@
             if (Math.abs(styling.shadow_offset_y + delta_y) < 25) {
               styling.shadow_offset_y += delta_y;
             }
+            return applyStyles();
+          }
+        });
+        $("#target-div").mouseup(function(event, ui) {
+          return dragging_cursor = false;
+        });
+        $("#target-div").mouseleave(function(event, ui) {
+          return dragging_cursor = false;
+        });
+      }
+      // Transformation rotater
+      if (new_id === "tab-transform") {
+        $("#target-div").addClass("dragcursor");
+        dragging_cursor = false;
+        x_start = y_start = prev_angle = 0;
+        $("#target-div").addClass("dragcursor");
+        $("#target-div").mousedown(function(event, ui) {
+          dragging_cursor = true;
+          x_start = event.pageX - center_x;
+          return y_start = center_y - event.pageY;
+        });
+        $("#target-div").mousemove(function(event, ui) {
+          var angle, x, x_term, y, y_term;
+          if (dragging_cursor) {
+            x = event.pageX;
+            y = event.pageY;
+            y = center_y - y;
+            x = x - center_x;
+            y_term = y - y_start;
+            x_term = x - x_start;
+            angle = Math.atan2(y_term, x_term) * 180 / Math.PI;
+            angle = (angle + 360) % 360;
+            angle = ((360 - angle) * 2) % 360;
+            styling.transformation_angle = angle;
+            styling.transformation_angle = styling.transformation_angle % 360;
             return applyStyles();
           }
         });

@@ -17,6 +17,7 @@ class Style
         @gradient = []
         @transition_speed = 0
         @transformation_skew = 0
+        @transformation_angle = 0
         @shadows_on = false
         @shadow_darkness = 0
         @shadow_blur = 50
@@ -97,9 +98,9 @@ class Style
         # TRANSFORMATIONS
         # Skew
         unless no_transf
-            css += "-ms-transform: skewX(" + @transformation_skew + "deg); " # IE
-            css += "-webkit-transform: skewX(" + @transformation_skew + "deg); " # Safari
-            css += "transform: skewX(" + @transformation_skew + "deg); " # Standard
+            css += "-ms-transform: skewX(" + @transformation_skew + "deg)" + "rotate(" + @transformation_angle.toFixed(0) + "deg); " # IE
+            css += "-webkit-transform: skewX(" + @transformation_skew + "deg)" + "rotate(" + @transformation_angle.toFixed(0) + "deg); " # Safari
+            css += "transform: skewX(" + @transformation_skew + "deg)" + "rotate(" + @transformation_angle.toFixed(0) + "deg); " # Standard
 
         # SHADOWS
         if @shadows_on            
@@ -130,6 +131,8 @@ $(document).ready () ->
     active = new Style("#target-div:active")
     styling = def
     preview_mode = false
+    center_x = $("#target-div").offset().left + $("#target-div").width() / 2
+    center_y = $("#target-div").offset().top + $("#target-div").height() / 2
 
     applyStyles = () ->
         if preview_mode
@@ -283,6 +286,34 @@ $(document).ready () ->
                         styling.shadow_offset_x += delta_x
                     if Math.abs(styling.shadow_offset_y + delta_y) < 25 
                         styling.shadow_offset_y += delta_y
+                    applyStyles()
+            $("#target-div").mouseup (event, ui) ->
+                dragging_cursor = false
+            $("#target-div").mouseleave (event, ui) ->
+                dragging_cursor = false
+        # Transformation rotater
+        if new_id is "tab-transform"
+            $("#target-div").addClass("dragcursor")
+            dragging_cursor = false
+            x_start = y_start = 0
+            $("#target-div").addClass("dragcursor")
+            $("#target-div").mousedown (event, ui) ->
+                dragging_cursor = true
+                x_start = event.pageX - center_x
+                y_start = center_y - event.pageY
+            $("#target-div").mousemove (event, ui) ->
+                if dragging_cursor
+                    x = event.pageX
+                    y = event.pageY
+                    y = center_y - y
+                    x = x - center_x
+                    y_term = y - y_start
+                    x_term = x - x_start
+                    angle = Math.atan2(y_term, x_term) * 180 / Math.PI
+                    angle = (angle + 360) % 360
+                    angle = ((360 - angle) * 2) % 360
+                    styling.transformation_angle = angle
+                    styling.transformation_angle = styling.transformation_angle % 360
                     applyStyles()
             $("#target-div").mouseup (event, ui) ->
                 dragging_cursor = false

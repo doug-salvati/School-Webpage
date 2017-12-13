@@ -17,6 +17,11 @@ class Style
         @gradient = []
         @transition_speed = 0
         @transformation_skew = 0
+        @shadows_on = false
+        @shadow_darkness = 0
+        @shadow_blur = 50
+        @shadow_offset_x = 10
+        @shadow_offset_y = 10
     
     resetAll: () ->
         @gradient_type = "left-right"
@@ -96,6 +101,11 @@ class Style
             css += "-webkit-transform: skewX(" + @transformation_skew + "deg); " # Safari
             css += "transform: skewX(" + @transformation_skew + "deg); " # Standard
 
+        # SHADOWS
+        if @shadows_on            
+            css += "box-shadow: " + @shadow_offset_x + "px " + @shadow_offset_y + "px " + @shadow_blur + "px " +
+                "rgb(" + @shadow_darkness + "," + @shadow_darkness + "," + @shadow_darkness + "); "
+
         # TRANSITIONS
         unless (@transition_speed is 0) or no_transi
             css += "-webkit-transition: all " + @transition_speed + "s; " # Safari
@@ -121,7 +131,7 @@ $(document).ready () ->
     styling = def
     preview_mode = false
 
-    applyStyles = () -> 
+    applyStyles = () ->
         if preview_mode
             $('#target-div').text("TRANSITION PREVIEW IS ON")
             css = def.completeCSS() + '\n' + hover.completeCSS() + '\n' + active.completeCSS()
@@ -205,6 +215,12 @@ $(document).ready () ->
             when "click" then styling = active
         $("#" + styling.gradient_type).prop('checked', true)
         $("#transf-skew").slider {value: -styling.transformation_skew}
+        $("#shadow-darkness").slider {value: 255 - styling.shadow_darkness}
+        $("#shadow-blur").slider {value: styling.shadow_blur}
+        if styling.shadows_on
+            $("#lbl-shadow-on").html('<i class="fa fa-toggle-on fa-3x" aria-hidden="true"></i>')
+        else
+            $("#lbl-shadow-on").html('<i class="fa fa-toggle-off fa-3x" aria-hidden="true"></i>')
         applyStyles()
     # View a preview of state effects
     $("input[name=transi-preview]").change () ->
@@ -219,8 +235,61 @@ $(document).ready () ->
         def.transition_speed = parseFloat(this.value)
         applyStyles()
 
+    # SHADOW ############################################################################
+    # Shadows on?
+    $("input[name=shadow-on]").change () ->
+        styling.shadows_on = !styling.shadows_on
+        if styling.shadows_on
+            $("#lbl-shadow-on").html('<i class="fa fa-toggle-on fa-3x" aria-hidden="true"></i>')
+        else
+            $("#lbl-shadow-on").html('<i class="fa fa-toggle-off fa-3x" aria-hidden="true"></i>')
+        applyStyles()
+    # Darkness
+    $("#shadow-darkness").slider({min: 0, max: 255, step: 5, value: 255})
+    $("#shadow-darkness").on "slide", (event, ui) ->
+            styling.shadow_darkness = 255 - ui.value
+            applyStyles()
+    # Blur
+    $("#shadow-blur").slider({min: 0, max: 100, step: 1, value: 50})
+    $("#shadow-blur").on "slide", (event, ui) ->
+            styling.shadow_blur = ui.value
+            applyStyles()
+
     # Tabs
-    $("#toolbar").tabs({active: 0});
+    tabswitcher = (event, ui) ->
+        new_id = ui.newPanel[0].id
+        old_id = ui.oldPanel[0].id
+        # Clear bindings on the target div
+        $("#target-div").off().removeClass()
+        # Apply bindings as appropriate
+        # Shadow dragger
+        if new_id is "tab-shadow"
+            dragging_cursor = false
+            x_start = y_start = 0
+            $("#target-div").addClass("dragcursor")
+            $("#target-div").mousedown (event, ui) ->
+                dragging_cursor = true
+                x_start = event.pageX
+                y_start = event.pageY
+            $("#target-div").mousemove (event, ui) ->
+                if dragging_cursor
+                    x = event.pageX
+                    y = event.pageY
+                    delta_x = x - x_start
+                    delta_y = y - y_start
+                    x_start = x
+                    y_start = y
+                    if Math.abs(styling.shadow_offset_x + delta_x) < 25
+                        styling.shadow_offset_x += delta_x
+                    if Math.abs(styling.shadow_offset_y + delta_y) < 25 
+                        styling.shadow_offset_y += delta_y
+                    applyStyles()
+            $("#target-div").mouseup (event, ui) ->
+                dragging_cursor = false
+            $("#target-div").mouseleave (event, ui) ->
+                dragging_cursor = false
+
+    $("#toolbar").tabs({active: 0, activate: tabswitcher});
     $("#generated-css").dialog {autoOpen: false, modal: true, width: "80%", title: "Copy & Paste CSS for Your Project", \
         buttons: [{text: "Done!", click: () -> $(this).dialog("close")}]}
     $("#generate-css").click () ->
@@ -230,9 +299,4 @@ $(document).ready () ->
         $("#generated-css").text(css)
         $("#generated-css").dialog "open"
     $("#reset-all").click () ->
-        def.resetAll()
-        hover.resetAll()
-        active.resetAll()
-        $("#left-right").prop('checked', true)
-        $("#transf-skew").slider {value: 0}
-        applyStyles()
+        location.reload()

@@ -88,13 +88,35 @@
             <!-- Transform -->
             <div id="tab-transform">
                 <div class="tool">
-                    <br/><div id="transf-skew"></div><br/>
+                    <br/><div id="transf-skew" class="slider"></div><br/>
                     Skew
                 </div>
+                <div class="tool separator"></div>
+                <div class="tool">
+                        <br/><i class="fa fa-repeat fa-3x" aria-hidden="true"></i><br/>
+                        DIV is<br/>Rotatable
+                    </div>            
             </div>
             <!-- Shadow -->
             <div id="tab-shadow">
-                Not Done Yet
+                <div class="tool">
+                    <input type="checkbox" name="shadow-on" id="shadow-on"></input>
+                    <label for="shadow-on" id="lbl-shadow-on"><i class="fa fa-toggle-off fa-3x" aria-hidden="true"></i></label><br/>
+                    Show Shadows
+                </div>
+                <div class="tool">
+                    <br/><div id="shadow-darkness" class="slider"></div><br/>
+                    Darkness
+                </div>
+                <div class="tool">
+                    <br/><div id="shadow-blur" class="slider"></div><br/>
+                    Blur
+                </div>
+                <div class="tool separator"></div>
+                <div class="tool">
+                    <br/><i class="fa fa-arrows fa-3x" aria-hidden="true"></i><br/>
+                    Drag DIV to<br/>Offset Shadow
+                </div>              
             </div>
             <!-- Border -->
             <div id="tab-border">

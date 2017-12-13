@@ -20,6 +20,11 @@
       this.gradient = [];
       this.transition_speed = 0;
       this.transformation_skew = 0;
+      this.shadows_on = false;
+      this.shadow_darkness = 0;
+      this.shadow_blur = 50;
+      this.shadow_offset_x = 10;
+      this.shadow_offset_y = 10;
     }
 
     resetAll() {
@@ -117,6 +122,10 @@
         css += "transform: skewX(" + this.transformation_skew + "deg); "; // Standard
       }
       
+      // SHADOWS
+      if (this.shadows_on) {
+        css += "box-shadow: " + this.shadow_offset_x + "px " + this.shadow_offset_y + "px " + this.shadow_blur + "px " + "rgb(" + this.shadow_darkness + "," + this.shadow_darkness + "," + this.shadow_darkness + "); ";
+      }
       // TRANSITIONS
       if (!((this.transition_speed === 0) || no_transi)) {
         css += "-webkit-transition: all " + this.transition_speed + "s; "; // Safari
@@ -142,7 +151,7 @@
   };
 
   $(document).ready(function() {
-    var active, applyStyles, def, hover, picker, preview_mode, styling;
+    var active, applyStyles, def, hover, picker, preview_mode, styling, tabswitcher;
     // Global CSS objects
     def = new Style("#target-div");
     hover = new Style("#target-div:hover");
@@ -267,6 +276,17 @@
       $("#transf-skew").slider({
         value: -styling.transformation_skew
       });
+      $("#shadow-darkness").slider({
+        value: 255 - styling.shadow_darkness
+      });
+      $("#shadow-blur").slider({
+        value: styling.shadow_blur
+      });
+      if (styling.shadows_on) {
+        $("#lbl-shadow-on").html('<i class="fa fa-toggle-on fa-3x" aria-hidden="true"></i>');
+      } else {
+        $("#lbl-shadow-on").html('<i class="fa fa-toggle-off fa-3x" aria-hidden="true"></i>');
+      }
       return applyStyles();
     });
     // View a preview of state effects
@@ -284,9 +304,86 @@
       def.transition_speed = parseFloat(this.value);
       return applyStyles();
     });
+    // SHADOW ############################################################################
+    // Shadows on?
+    $("input[name=shadow-on]").change(function() {
+      styling.shadows_on = !styling.shadows_on;
+      if (styling.shadows_on) {
+        $("#lbl-shadow-on").html('<i class="fa fa-toggle-on fa-3x" aria-hidden="true"></i>');
+      } else {
+        $("#lbl-shadow-on").html('<i class="fa fa-toggle-off fa-3x" aria-hidden="true"></i>');
+      }
+      return applyStyles();
+    });
+    // Darkness
+    $("#shadow-darkness").slider({
+      min: 0,
+      max: 255,
+      step: 5,
+      value: 255
+    });
+    $("#shadow-darkness").on("slide", function(event, ui) {
+      styling.shadow_darkness = 255 - ui.value;
+      return applyStyles();
+    });
+    // Blur
+    $("#shadow-blur").slider({
+      min: 0,
+      max: 100,
+      step: 1,
+      value: 50
+    });
+    $("#shadow-blur").on("slide", function(event, ui) {
+      styling.shadow_blur = ui.value;
+      return applyStyles();
+    });
     // Tabs
+    tabswitcher = function(event, ui) {
+      var dragging_cursor, new_id, old_id, x_start, y_start;
+      new_id = ui.newPanel[0].id;
+      old_id = ui.oldPanel[0].id;
+      // Clear bindings on the target div
+      $("#target-div").off().removeClass();
+      // Apply bindings as appropriate
+      // Shadow dragger
+      if (new_id === "tab-shadow") {
+        dragging_cursor = false;
+        x_start = y_start = 0;
+        $("#target-div").addClass("dragcursor");
+        $("#target-div").mousedown(function(event, ui) {
+          dragging_cursor = true;
+          x_start = event.pageX;
+          return y_start = event.pageY;
+        });
+        $("#target-div").mousemove(function(event, ui) {
+          var delta_x, delta_y, x, y;
+          if (dragging_cursor) {
+            x = event.pageX;
+            y = event.pageY;
+            delta_x = x - x_start;
+            delta_y = y - y_start;
+            x_start = x;
+            y_start = y;
+            if (Math.abs(styling.shadow_offset_x + delta_x) < 25) {
+              styling.shadow_offset_x += delta_x;
+            }
+            if (Math.abs(styling.shadow_offset_y + delta_y) < 25) {
+              styling.shadow_offset_y += delta_y;
+            }
+            return applyStyles();
+          }
+        });
+        $("#target-div").mouseup(function(event, ui) {
+          return dragging_cursor = false;
+        });
+        return $("#target-div").mouseleave(function(event, ui) {
+          return dragging_cursor = false;
+        });
+      }
+    };
     $("#toolbar").tabs({
-      active: 0
+      active: 0,
+      activate: tabswitcher
     });
     $("#generated-css").dialog({
       autoOpen: false,
@@ -311,14 +408,7 @@
       return $("#generated-css").dialog("open");
     });
     return $("#reset-all").click(function() {
-      def.resetAll();
-      hover.resetAll();
-      active.resetAll();
-      $("#left-right").prop('checked', true);
-      $("#transf-skew").slider({
-        value: 0
-      });
-      return applyStyles();
+      return location.reload();
     });
   });
 

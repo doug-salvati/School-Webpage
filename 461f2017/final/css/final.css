@@ -16,7 +16,18 @@ body {
     font-family: sans-serif;
 }
 
-input {
+a {
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+
+::placeholder {
+    color: #e2e2e2;
+}
+
+input[type=checkbox], input[type=radio], input[type=file]{
     display: none;
 }
 
@@ -113,7 +124,6 @@ button {
     color: rgba(189, 189, 189, 0.5);
     font-style: italic;
     font-size: 2em;
-    padding: 10px;
 }
 
 /* GRADIENT */

@@ -23,6 +23,10 @@ class Style
         @shadow_blur = 50
         @shadow_offset_x = 10
         @shadow_offset_y = 10
+        @border_url = ""
+        @border_file_name = ""
+        @border_width = 10
+        @border_slice = 30
     
     resetAll: () ->
         @gradient_type = "left-right"
@@ -48,6 +52,7 @@ class Style
         css = ""
         no_transi = no_x is "no-transi"
         no_transf = no_x is "no-transf"
+        no_blob = no_x is "no-blob"
         # SIZE
         css += "height: 300px; "
         css += "width: 300px; "
@@ -98,9 +103,9 @@ class Style
         # TRANSFORMATIONS
         # Skew
         unless no_transf
-            css += "-ms-transform: skewX(" + @transformation_skew + "deg)" + "rotate(" + @transformation_angle.toFixed(0) + "deg); " # IE
-            css += "-webkit-transform: skewX(" + @transformation_skew + "deg)" + "rotate(" + @transformation_angle.toFixed(0) + "deg); " # Safari
-            css += "transform: skewX(" + @transformation_skew + "deg)" + "rotate(" + @transformation_angle.toFixed(0) + "deg); " # Standard
+            css += "-ms-transform: skewX(" + @transformation_skew + "deg)" + " rotate(" + @transformation_angle.toFixed(0) + "deg); " # IE
+            css += "-webkit-transform: skewX(" + @transformation_skew + "deg)" + " rotate(" + @transformation_angle.toFixed(0) + "deg); " # Safari
+            css += "transform: skewX(" + @transformation_skew + "deg)" + " rotate(" + @transformation_angle.toFixed(0) + "deg); " # Standard
 
         # SHADOWS
         if @shadows_on            
@@ -110,8 +115,18 @@ class Style
         # TRANSITIONS
         unless (@transition_speed is 0) or no_transi
             css += "-webkit-transition: all " + @transition_speed + "s; " # Safari
-            css += "transition: all " + @transition_speed + "s; " # Standard\
+            css += "transition: all " + @transition_speed + "s; " # Standard
 
+        # BORDER
+        unless @border_url is ""
+            if no_blob and (@border_url.startsWith "data:")
+                border = @border_file_name
+            else
+                border = @border_url
+            css += "border: " + @border_width + "px solid white; "
+            css += "-webkit-border-image: url(" + border + ") " + @border_slice + "% round; " # Safari
+            css += "-o-border-image: url(" + border + ") " + @border_slice + "% round; " # Opera
+            css += "border-image: url(" + border + ") " + @border_slice + "% round; " # Standard
         return css
 
     readableCSS: (no_x = "") ->
@@ -224,6 +239,9 @@ $(document).ready () ->
             $("#lbl-shadow-on").html('<i class="fa fa-toggle-on fa-3x" aria-hidden="true"></i>')
         else
             $("#lbl-shadow-on").html('<i class="fa fa-toggle-off fa-3x" aria-hidden="true"></i>')
+        $("#border-url").val(if styling.border_url.startsWith "data:" then "Local File" else styling.border_url)
+        $("#border-width").slider {value: styling.border_width}
+        $("#border-slice").slider {value: styling.border_slice}
         applyStyles()
     # View a preview of state effects
     $("input[name=transi-preview]").change () ->
@@ -258,7 +276,28 @@ $(document).ready () ->
             styling.shadow_blur = ui.value
             applyStyles()
 
-    # Tabs
+    # BORDER ###########################################################################
+    $("#border-url").change () ->
+        styling.border_url = $("#border-url").val()
+        applyStyles()
+    $("#border-width").slider({min: 1, max: 50, step: 1, value: 10})
+    $("#border-width").on "slide", (event, ui) ->
+            styling.border_width = ui.value
+            applyStyles()
+    $("#border-slice").slider({min: 1, max: 49, step: 1, value: 30})
+    $("#border-slice").on "slide", (event, ui) ->
+            styling.border_slice = ui.value
+            applyStyles()
+    $("#local-file").change () ->
+        fr = new FileReader()
+        fr.onload = (event) ->
+            $("#border-url").val(event.target.result).change()
+            $("#border-url").val("Local File")
+        if this.files.length > 0
+            fr.readAsDataURL(this.files[0])
+            styling.border_file_name = this.files[0].name
+
+    # Tabs ##############################################################################
     tabswitcher = (event, ui) ->
         new_id = ui.newPanel[0].id
         old_id = ui.oldPanel[0].id
@@ -320,13 +359,13 @@ $(document).ready () ->
             $("#target-div").mouseleave (event, ui) ->
                 dragging_cursor = false
 
-    $("#toolbar").tabs({active: 0, activate: tabswitcher});
+    $("#toolbar").tabs({active: 0, activate: tabswitcher})
     $("#generated-css").dialog {autoOpen: false, modal: true, width: "80%", title: "Copy & Paste CSS for Your Project", \
         buttons: [{text: "Done!", click: () -> $(this).dialog("close")}]}
     $("#generate-css").click () ->
-        css = def.completeCSS() + "\n\n"
-        css += hover.completeCSS() + "\n\n"
-        css += active.completeCSS()
+        css = def.completeCSS("", "no-blob") + "\n\n"
+        css += hover.completeCSS("", "no-blob") + "\n\n"
+        css += active.completeCSS("", "no-blob")
         $("#generated-css").text(css)
         $("#generated-css").dialog "open"
     $("#reset-all").click () ->

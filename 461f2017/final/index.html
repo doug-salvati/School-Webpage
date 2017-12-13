@@ -51,7 +51,7 @@
                 <li><a href="#tab-gradient"><i class="fa fa-paint-brush" aria-hidden="true"></i> Gradient</a></li>
                 <li><a href="#tab-transform"><i class="fa fa-repeat" aria-hidden="true"></i> Transform</a></li>
                 <li><a href="#tab-shadow"><i class="fa fa-moon-o" aria-hidden="true"></i> Shadow</a></li>
-                <li><a href="#tab-border"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Border</a></li>
+                <li><a href="#tab-border"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Border Image</a></li>
                 <li><a href="#tab-transition"><i class="fa fa-angle-double-right" aria-hidden="true"></i> Transition</a></li>
             </ul>
             <!-- Gradient -->
@@ -121,7 +121,22 @@
             </div>
             <!-- Border -->
             <div id="tab-border">
-                Not Done Yet
+                <div class="tool">
+                    <i class="fa fa-picture-o fa-3x" aria-hidden="true"></i><br>
+                    Choose Your Image<br/><br/>
+                    <input id="border-url" type="text" placeholder="Enter Web Address"><br/>
+                    or <label for="local-file"><i class="fa fa-folder" aria-hidden="true"></i> Browse Computer</label>
+                    <input id="local-file" type="file">
+                </div>
+                <div class="tool separator"></div>
+                <div class="tool">
+                    <br/><div id="border-width" class="slider"></div><br/>
+                    Width
+                </div>
+                <div class="tool">
+                    <br/><div id="border-slice" class="slider"></div><br/>
+                    Repetition
+                </div>
             </div>
             <!-- Transition -->
             <div id="tab-transition">

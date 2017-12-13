@@ -26,6 +26,10 @@
       this.shadow_blur = 50;
       this.shadow_offset_x = 10;
       this.shadow_offset_y = 10;
+      this.border_url = "";
+      this.border_file_name = "";
+      this.border_width = 10;
+      this.border_slice = 30;
     }
 
     resetAll() {
@@ -55,11 +59,12 @@
     }
 
     generateCSS(no_x = "") {
-      var css, grad_color_list, grad_type_firefox, grad_type_opera, grad_type_safari, grad_type_std, i, len, no_transf, no_transi, ref, stop;
+      var border, css, grad_color_list, grad_type_firefox, grad_type_opera, grad_type_safari, grad_type_std, i, len, no_blob, no_transf, no_transi, ref, stop;
       // INITIALIZE
       css = "";
       no_transi = no_x === "no-transi";
       no_transf = no_x === "no-transf";
+      no_blob = no_x === "no-blob";
       // SIZE
       css += "height: 300px; ";
       css += "width: 300px; ";
@@ -118,9 +123,9 @@
       // TRANSFORMATIONS
       // Skew
       if (!no_transf) {
-        css += "-ms-transform: skewX(" + this.transformation_skew + "deg)" + "rotate(" + this.transformation_angle.toFixed(0) + "deg); "; // IE
-        css += "-webkit-transform: skewX(" + this.transformation_skew + "deg)" + "rotate(" + this.transformation_angle.toFixed(0) + "deg); "; // Safari
-        css += "transform: skewX(" + this.transformation_skew + "deg)" + "rotate(" + this.transformation_angle.toFixed(0) + "deg); "; // Standard
+        css += "-ms-transform: skewX(" + this.transformation_skew + "deg)" + " rotate(" + this.transformation_angle.toFixed(0) + "deg); "; // IE
+        css += "-webkit-transform: skewX(" + this.transformation_skew + "deg)" + " rotate(" + this.transformation_angle.toFixed(0) + "deg); "; // Safari
+        css += "transform: skewX(" + this.transformation_skew + "deg)" + " rotate(" + this.transformation_angle.toFixed(0) + "deg); "; // Standard
       }
       
       // SHADOWS
@@ -130,7 +135,20 @@
       // TRANSITIONS
       if (!((this.transition_speed === 0) || no_transi)) {
         css += "-webkit-transition: all " + this.transition_speed + "s; "; // Safari
-        css += "transition: all " + this.transition_speed + "s; "; // Standard\
+        css += "transition: all " + this.transition_speed + "s; "; // Standard
+      }
+      
+      // BORDER
+      if (this.border_url !== "") {
+        if (no_blob && (this.border_url.startsWith("data:"))) {
+          border = this.border_file_name;
+        } else {
+          border = this.border_url;
+        }
+        css += "border: " + this.border_width + "px solid white; ";
+        css += "-webkit-border-image: url(" + border + ") " + this.border_slice + "% round; "; // Safari
+        css += "-o-border-image: url(" + border + ") " + this.border_slice + "% round; "; // Opera
+        css += "border-image: url(" + border + ") " + this.border_slice + "% round; "; // Standard
       }
       return css;
     }
@@ -290,6 +308,13 @@
       } else {
         $("#lbl-shadow-on").html('<i class="fa fa-toggle-off fa-3x" aria-hidden="true"></i>');
       }
+      $("#border-url").val(styling.border_url.startsWith("data:") ? "Local File" : styling.border_url);
+      $("#border-width").slider({
+        value: styling.border_width
+      });
+      $("#border-slice").slider({
+        value: styling.border_slice
+      });
       return applyStyles();
     });
     // View a preview of state effects
@@ -340,9 +365,46 @@
       styling.shadow_blur = ui.value;
       return applyStyles();
     });
-    // Tabs
+    // BORDER ###########################################################################
+    $("#border-url").change(function() {
+      styling.border_url = $("#border-url").val();
+      return applyStyles();
+    });
+    $("#border-width").slider({
+      min: 1,
+      max: 50,
+      step: 1,
+      value: 10
+    });
+    $("#border-width").on("slide", function(event, ui) {
+      styling.border_width = ui.value;
+      return applyStyles();
+    });
+    $("#border-slice").slider({
+      min: 1,
+      max: 49,
+      step: 1,
+      value: 30
+    });
+    $("#border-slice").on("slide", function(event, ui) {
+      styling.border_slice = ui.value;
+      return applyStyles();
+    });
+    $("#local-file").change(function() {
+      var fr;
+      fr = new FileReader();
+      fr.onload = function(event) {
+        $("#border-url").val(event.target.result).change();
+        return $("#border-url").val("Local File");
+      };
+      if (this.files.length > 0) {
+        fr.readAsDataURL(this.files[0]);
+        return styling.border_file_name = this.files[0].name;
+      }
+    });
+    // Tabs ##############################################################################
     tabswitcher = function(event, ui) {
-      var dragging_cursor, new_id, old_id, prev_angle, x_start, y_start;
+      var dragging_cursor, new_id, old_id, x_start, y_start;
       new_id = ui.newPanel[0].id;
       old_id = ui.oldPanel[0].id;
       // Clear bindings on the target div
@@ -387,7 +449,7 @@
       if (new_id === "tab-transform") {
         $("#target-div").addClass("dragcursor");
         dragging_cursor = false;
-        x_start = y_start = prev_angle = 0;
+        x_start = y_start = 0;
         $("#target-div").addClass("dragcursor");
         $("#target-div").mousedown(function(event, ui) {
           dragging_cursor = true;
@@ -439,9 +501,9 @@
     });
     $("#generate-css").click(function() {
       var css;
-      css = def.completeCSS() + "\n\n";
-      css += hover.completeCSS() + "\n\n";
-      css += active.completeCSS();
+      css = def.completeCSS("", "no-blob") + "\n\n";
+      css += hover.completeCSS("", "no-blob") + "\n\n";
+      css += active.completeCSS("", "no-blob");
       $("#generated-css").text(css);
       return $("#generated-css").dialog("open");
     });

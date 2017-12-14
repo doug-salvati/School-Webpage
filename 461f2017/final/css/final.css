@@ -165,3 +165,21 @@ button {
 .dragcursor {
     cursor: move;
 }
+
+/* EXAMPLES */
+#tab-example-tab {
+    background: rgb(10, 155, 22);
+    background: rgb(0, 207, 41);
+	background: -webkit-linear-gradient(bottom, rgb(0, 207, 41) 36%, rgb(0, 255, 51) 47%);
+	background: -o-linear-gradient(top, rgb(0, 207, 41) 36%, rgb(0, 255, 51) 47%);
+	background: -moz-linear-gradient(top, rgb(0, 207, 41) 36%, rgb(0, 255, 51) 47%);
+	background: linear-gradient(to top, rgb(0, 207, 41) 36%, rgb(0, 255, 51) 47%);
+}
+
+.example {
+    display: inline-block;
+    height: 100px;
+    width: 100px;
+    margin: 20px;
+    margin-left: 80px;
+}

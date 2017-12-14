@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<!--
+    Douglas Salvati
+    Douglas_Salvati@student.uml.edu
+    Computer Science Department, UMass Lowell
+    COMP.4610 GUI Programming 1
+    File: /usr/cs/2018/dsalvati/public_html/comp4610/final/index.html
+    Created: 9 December 2017
+    Modified: 9 December 2017
+
+    Description: For my application I propose an interface that allows you edit a blank div. There will be a menu to control some
+    settings but you will be able to visually pick colors, “paint” them on the gradient, rotate and transform the div
+    with your cursor, and more. All the while, all the associated CSS will be generated for you using the different
+    browser’s formats. It is not a full CSS editor, it’s just for those select properties that cause difficulties and really
+    need to be visualized to make design decisions.
+-->
+
+<html>
+    <head>
+        <title>Final Project</title>
+        <!-- JQuery/UI CDN -->
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+        <!-- Color Picker -->
+        <script src="js/colorpicker/color-picker.min.js"></script>
+        <!-- My Script - Compiled from Coffee -->
+        <script src="js/final.js"></script>
+        <!-- My Stylesheets -->
+        <link rel="stylesheet" href="css/final.css">
+        <link rel="stylesheet" href="css/examples.css">
+        <!-- Spot for dynamic styling -->
+        <style id="dynamic_stylesheet"></style>
+        <!-- JQuery UI Stylesheet -->
+        <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/base/jquery-ui.css">
+        <!-- Color Picker Stylesheet -->
+        <link rel="stylesheet" href="css/colorpicker/color-picker.min.css">
+        <!-- Using font awesome to get some cool symbols -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+    <body>
+        <!-- HEADING -->
+        <div id="heading">
+            <h1>CSS<i class="fa fa-css3" aria-hidden="true"></i> Code Generator</h1>
+            <h1><button id="reset-all">Reset All</button></h1>
+            <h1><button id="generate-css">Get CSS</button></h1>
+            <div id="generated-css"></div>
+        </div>
+
+        <!-- TOOLBAR -->
+        <div id="toolbar">
+            <ul id="tabs-list">
+                <li><a href="#tab-gradient"><i class="fa fa-paint-brush" aria-hidden="true"></i> Gradient</a></li>
+                <li><a href="#tab-transform"><i class="fa fa-repeat" aria-hidden="true"></i> Transform</a></li>
+                <li><a href="#tab-shadow"><i class="fa fa-moon-o" aria-hidden="true"></i> Shadow</a></li>
+                <li><a href="#tab-border"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Border Image</a></li>
+                <li><a href="#tab-transition"><i class="fa fa-angle-double-right" aria-hidden="true"></i> Transition</a></li>
+                <li id="tab-example-tab"><a href="#tab-examples"><i class="fa fa-star" aria-hidden="true"></i> Examples</a></li>
+            </ul>
+            <!-- Gradient -->
+            <div id="tab-gradient">
+                <div class="tool">
+                    <div id="grad-color-droplet" class="droplet-and-clone"></div><br/>
+                    Drag Me
+                </div>
+                <div class="tool">
+                    <input type="text" id="grad-cp-text" hidden>
+                    <div id="grad-colorpicker"></div>
+                </div>
+                <div class="tool separator"></div>
+                <div class="tool">
+                    <div class="tool-array">
+                        <input type="radio" name="grad-direction" value="left-right" id="left-right" checked></input>
+                        <label for="left-right"><i class="fa fa-arrow-right fa-3x" aria-hidden="true"></i></label>
+                        <input type="radio" name="grad-direction" value="top-bottom" id="top-bottom"></input>
+                        <label for="top-bottom"><i class="fa fa-arrow-down fa-3x" aria-hidden="true"></i></label>
+                        <input type="radio" name="grad-direction" value="radial" id="radial"></input>
+                        <label for="radial"><i class="fa fa-arrows-alt fa-3x" aria-hidden="true"></i></label><br/>
+                        <input type="radio" name="grad-direction" value="right-left" id="right-left"></input>
+                        <label for="right-left"><i class="fa fa-arrow-left fa-3x" aria-hidden="true"></i></label>
+                        <input type="radio" name="grad-direction" value="bottom-top" id="bottom-top"></input>
+                        <label for="bottom-top"><i class="fa fa-arrow-up fa-3x" aria-hidden="true"></i></label><br/>
+                    </div>
+                    Direction
+                </div>
+                <div class="tool separator"></div>
+                <div class="tool">
+                    <button id="grad-reset"><i class="fa fa-refresh fa-3x" aria-hidden="true"></i></button><br/><br/>Reset
+                </div>
+            </div>
+            <!-- Transform -->
+            <div id="tab-transform">
+                <div class="tool">
+                    <br/><div id="transf-skew" class="slider"></div><br/>
+                    Skew
+                </div>
+                <div class="tool separator"></div>
+                <div class="tool">
+                        <br/><i class="fa fa-repeat fa-3x" aria-hidden="true"></i><br/>
+                        DIV is<br/>Rotatable
+                    </div>            
+            </div>
+            <!-- Shadow -->
+            <div id="tab-shadow">
+                <div class="tool">
+                    <input type="checkbox" name="shadow-on" id="shadow-on"></input>
+                    <label for="shadow-on" id="lbl-shadow-on"><i class="fa fa-toggle-off fa-3x" aria-hidden="true"></i></label><br/>
+                    Show Shadows
+                </div>
+                <div class="tool separator"></div>
+                <div class="tool">
+                    <br/><div id="shadow-darkness" class="slider"></div><br/>
+                    Darkness
+                </div>
+                <div class="tool">
+                    <br/><div id="shadow-blur" class="slider"></div><br/>
+                    Blur
+                </div>
+                <div class="tool separator"></div>
+                <div class="tool">
+                    <br/><i class="fa fa-arrows fa-3x" aria-hidden="true"></i><br/>
+                    Drag DIV to<br/>Offset Shadow
+                </div>              
+            </div>
+            <!-- Border -->
+            <div id="tab-border">
+                <div class="tool">
+                    <i class="fa fa-picture-o fa-3x" aria-hidden="true"></i><br>
+                    Choose Your Image<br/><br/>
+                    <input id="border-url" type="text" placeholder="Enter Web Address"><br/>
+                    or <label for="local-file"><i class="fa fa-folder" aria-hidden="true"></i> Browse Computer</label>
+                    <input id="local-file" type="file">
+                </div>
+                <div class="tool separator"></div>
+                <div class="tool">
+                    <br/><div id="border-width" class="slider"></div><br/>
+                    Width
+                </div>
+                <div class="tool">
+                    <br/><div id="border-slice" class="slider"></div><br/>
+                    Repetition
+                </div>
+            </div>
+            <!-- Transition -->
+            <div id="tab-transition">
+                <div class="tool">
+                    <div class="tool-array-ctr">
+                        <input type="radio" name="transi-state" value="default" id="default" checked></input>
+                        <label for="default"><i class="fa fa-check-circle-o fa-2x" aria-hidden="true"></i> Default</label><br/>
+                        <input type="radio" name="transi-state" value="hover" id="hover"></input>
+                        <label for="hover"><i class="fa fa-mouse-pointer fa-2x" aria-hidden="true"></i> Hover</label><br/>
+                        <input type="radio" name="transi-state" value="click" id="click"></input>
+                        <label for="click"><i class="fa fa-hand-pointer-o fa-2x" aria-hidden="true"></i> Click</label><br/>
+                    </div>
+                    Currently Editing
+                </div>
+                <div class="tool separator"></div>
+                <div class="tool">
+                    <select id="transi-duration">
+                        <option value="0">Instantaneous</option>
+                        <option value="0.5">Very Fast</option>
+                        <option value="1">Fast</option>
+                        <option value="2">Medium</option>
+                        <option value="3">Slow</option>
+                        <option value="4">Very Slow</option>
+                    </select><br/><br/>
+                    Speed
+                </div>
+                <div class="tool separator"></div>
+                <div class="tool">
+                    <input type="checkbox" name="transi-preview" id="preview-mode"></input>
+                    <label for="preview-mode" id="lbl-preview-mode"><i class="fa fa-toggle-off fa-3x" aria-hidden="true"></i></label><br/>
+                    Preview
+                </div>
+            </div>
+            <!-- Examples -->
+            <div id="tab-examples">
+                <div id="example-1" class="example"></div>
+                <div id="example-2" class="example"></div>
+                <div id="example-3" class="example"></div>
+                <div id="example-4" class="example"></div>
+                <div id="example-5" class="example"></div><br/>
+                <a href="https://github.com/doug-salvati/School-Webpage/blob/master/461f2017/final/User%20Manual.pdf">Read the User Manual</a>
+            </div>
+        </div>
+        <div id="target-div"></div>
+    </body>
+</html>
